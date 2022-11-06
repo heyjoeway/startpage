@@ -1,0 +1,9 @@
+CACHE MANIFEST
+# Version 1
+
+CACHE:
+main.js
+style.css
+fonts/fonts.css
+fonts/franklin_gothic_regular-webfont.woff
+fonts/franklin_gothic_regular-webfont.woff2
