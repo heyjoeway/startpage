@@ -6,7 +6,10 @@ html, body {
     margin: 0;
     padding: 0;
     user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
     font-family: 'franklin_gothicregular';
+    overflow-x: hidden;
 }
 
 * {

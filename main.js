@@ -120,9 +120,13 @@ function configure() {
 $("#config").click(configure);
 
 // Dice roll!
-$("#bg-bottom-right").text(
-    "⚀⚁⚂⚃⚄⚅"[Math.round(Math.random()*6)]
-);
+let htmlDiceEntities = ["&#x2680;","&#x2681;","&#x2682;","&#x2683;","&#x2684;","&#x2685;"];
+
+function randomElement(arr) {
+    return arr[Math.round(Math.random()*arr.length)];
+}
+
+$("#bg-bottom-right").html(randomElement(htmlDiceEntities));
 
 try {
     profiles = localStorage.getItem("profiles");
