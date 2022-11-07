@@ -30,6 +30,10 @@ let exampleProfiles = {
                         "href": "https://youtube.com"
                     },
                     {
+                        "name": "github",
+                        "href": "https://github.com"
+                    },
+                    {
                         "name": "google drive",
                         "href": "https://drive.google.com"
                     },
@@ -52,6 +56,7 @@ function activateProfile(profiles, profileKey) {
             .addClass("category");
         let $categoryTitle = $('<div></div>')
             .addClass("category-title")
+            .addClass("blur-in")
             .css("color", category.color)
             .text(category.name);
         $category.append($categoryTitle);
@@ -60,6 +65,8 @@ function activateProfile(profiles, profileKey) {
             let $link = $('<a></a>')
                 .attr("href", item.href)
                 .addClass("category-item")
+                .addClass("clickable")
+                .addClass("blur-in")
                 .text(item.name);
             $category.append($link);
         });
@@ -76,6 +83,8 @@ function updateProfiles(profiles) {
         let profile = profiles[profileKey];
         let $e = $('<div></div>')
             .addClass("profile")
+            .addClass("clickable")
+            .addClass("blur-in")
             .text(profile.name)
             .click(() => activateProfile(profiles, profileKey));
         $profiles.append($e);

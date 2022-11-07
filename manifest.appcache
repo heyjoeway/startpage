@@ -3,6 +3,7 @@ CACHE MANIFEST
 
 CACHE:
 main.js
+jquery-3.6.1.min.js
 style.css
 fonts/fonts.css
 fonts/franklin_gothic_regular-webfont.woff

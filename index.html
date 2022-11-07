@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <title>New Tab</title>
-    <script
-			  src="https://code.jquery.com/jquery-3.6.1.min.js"
-			  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-			  crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./fonts/fonts.css" />
 </head>
 <body>
-    <div class="bg-element" id="bg-top-left">start</div>
-    <div class="bg-element" id="bg-bottom-right">⚅</div>
-    <div id="config">&#x2699;</div>
+    <div class="bg-element blur-in" id="bg-top-left">start</div>
+    <div class="bg-element blur-in" id="bg-bottom-right">⚅</div>
+    <div class="clickable" id="config">&#x2699;</div>
     <div id="profiles"></div>
     <div id="categories"></div>
+    <!-- One dependency never hurt nobody -->
+    <script src="./jquery-3.6.1.min.js"></script>
     <script src="./main.js"></script>
 </body>
