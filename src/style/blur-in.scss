@@ -1,0 +1,18 @@
+.blur-in {
+	animation-name: blur-in;
+	animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+	filter: opacity(0%);
+}
+
+@keyframes blur-in {
+	from {
+		filter: blur(128px) opacity(0%);
+		transform: scale(2) rotateZ(15deg);
+	}
+	to {
+		filter: blur(0px) opacity(100%);
+		transform: scale(1) rotateZ(0deg);
+	}
+}
