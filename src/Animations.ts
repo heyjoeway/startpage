@@ -25,7 +25,6 @@ function blurSink(node: HTMLElement, params?: {
 		duration: params?.duration || 500,
 		css: (t: number) => {
 			const radius = params?.radius || 64;
-			// t = quartOut(t);
 			return `
 				filter: blur(${radius * (1 - t)}px) opacity(${100 * t}%);
 				transform: scale(${t});
