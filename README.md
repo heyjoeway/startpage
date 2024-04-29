@@ -19,10 +19,10 @@ This sends domain URLs to Google to get high quality favicons and highlight colo
 ## Local development
 
 ```bash
-    git clone https://github.com/heyjoeway/startpage.git
-    cd startpage
-    npm install
-    npm run build
+git clone https://github.com/heyjoeway/startpage.git
+cd startpage
+npm install
+npm run build
 ```
 
 You can also use `npm run watch` to automatically rebuild the extension when you make changes.
