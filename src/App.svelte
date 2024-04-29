@@ -25,15 +25,6 @@
 	}
 }
 
-#breadcrumbs {
-	width: 100%;
-	text-align: left;
-	margin-left: 12px;
-	user-select: none;
-	cursor: pointer;
-	color: #888;
-}
-
 #edit {
     width: 48px;
     height: 48px;
@@ -62,6 +53,7 @@ import Category from "./Category.svelte";
 import Item from "./Item.svelte";
 import Title from "./Title.svelte";
 import Search from "./Search.svelte";
+import Breadcrumbs from "./Breadcrumbs.svelte";
 
 import { blurFall, blurSink } from "./Animations";
 import Clickable from "./Clickable.svelte";
@@ -128,6 +120,7 @@ function openEditor() {
 {#if nodeStack.length === 1}
 	<div style="position:absolute" in:blurFall out:blurSink>
 		<Search bind:searchQuery={searchQuery} />
+
 		{#if searchQuery.length === 0}
 			<div class="folder">
 				{#each currentNodeChildren as child (child.id)}
@@ -163,22 +156,8 @@ function openEditor() {
 	out:blurSink|global
 	style="position:absolute;"
 >
-	<div id="breadcrumbs">
-		{#each nodeStack as node, index (node.id)}
-			{#if index < nodeStack.length - 1}
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<span
-					class="breadcrumb"
-					on:click={() => {
-						nodeStack = nodeStack.slice(0, index + 1);
-					}}
-				>
-					{node.title} &#x25B6;
-				</span>
-			{/if}
-		{/each}
-	</div>
+
+	<Breadcrumbs bind:nodeStack={nodeStack} />
 
 	<Title color="white">
 		{currentNode?.title}
