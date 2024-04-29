@@ -13,18 +13,6 @@
     flex-wrap: wrap;
 }
 
-.folder {
-	display: flex;
-	flex-direction: row;
-	// justify-content: center;
-	width: fit-content;
-	flex-wrap: wrap;
-	
-	.itemmargin {
-		margin: 4px;
-	}
-}
-
 #edit {
     width: 48px;
     height: 48px;
@@ -54,6 +42,7 @@ import Item from "./Item.svelte";
 import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
+import Folder from "./Folder.svelte";
 
 import { blurFall, blurSink } from "./Animations";
 import Clickable from "./Clickable.svelte";
@@ -122,15 +111,7 @@ function openEditor() {
 		<Search bind:searchQuery={searchQuery} />
 
 		{#if searchQuery.length === 0}
-			<div class="folder">
-				{#each currentNodeChildren as child (child.id)}
-					{#if child.url} <!-- item -->
-						<div class="itemmargin">
-							<Item node={child} />
-						</div>
-					{/if}
-				{/each}
-			</div>
+			<Folder bind:currentNodeChildren={currentNodeChildren} />
 
 			<div id="categories">
 				{#each currentNodeChildren as child, index (child.id)}
@@ -163,18 +144,13 @@ function openEditor() {
 		{currentNode?.title}
 	</Title>
 	
-	<div class="folder">
-		{#each currentNodeChildren as child (child.id)}
-			<div class="itemmargin">
-				<Item
-					node={child}
-					onFolderClick={node => {
-						nodeStack = [...nodeStack, node];
-					}}
-				/>
-			</div>
-		{/each}
-	</div>
+	<Folder
+		bind:currentNodeChildren={currentNodeChildren}
+		showSubFolders={true}
+		onFolderClick={node => {
+			nodeStack = [...nodeStack, node];
+		}}
+	/>
 </div>
 {/key}
 
