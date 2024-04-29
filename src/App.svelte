@@ -34,20 +34,6 @@
 	color: #888;
 }
 
-#search {
-	width: 100%;
-	border: none;
-	padding: 10px 12px;
-	border-radius: 24px;
-	background: rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(32px);
-	color: white;
-	
-	&:focus {
-		outline: none;
-	}
-}
-
 #edit {
     width: 48px;
     height: 48px;
@@ -75,9 +61,9 @@ import Background from "./Background.svelte";
 import Category from "./Category.svelte";
 import Item from "./Item.svelte";
 import Title from "./Title.svelte";
+import Search from "./Search.svelte";
 
 import { blurFall, blurSink } from "./Animations";
-import type { FormEventHandler } from "svelte/elements";
 import Clickable from "./Clickable.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
@@ -118,20 +104,8 @@ $: {
 	} else currentNodeChildren = [];
 }
 
-
 let searchQuery = "";
-let searchNodes: chrome.bookmarks.BookmarkTreeNode[] = [];
-function search(event: Event) {
-	searchQuery = (event.target as HTMLInputElement).value;
-	if (searchQuery === "") {
-		searchNodes = [];
-		return;
-	}
-	
-	chrome.bookmarks.search(searchQuery, results => {
-		searchNodes = results;
-	});
-}
+
 
 function openEditor() {
 	chrome.tabs.create({ url: `chrome://bookmarks?id=${currentNode?.id}` });
@@ -153,32 +127,8 @@ function openEditor() {
 
 {#if nodeStack.length === 1}
 	<div style="position:absolute" in:blurFall out:blurSink>
-		<!-- Search box -->
-		<!-- svelte-ignore a11y-autofocus -->
-		<input
-			id="search"
-			type="text"
-			placeholder="Search Bookmarks..."
-			autofocus
-			on:input={search}
-			on:keydown={event => {
-				if (event.key !== "Enter") return;
-				// Open first search result
-				searchNodes[0]?.url && window.open(searchNodes[0].url, "_self");
-			}}
-		/>
-		
-		{#if searchQuery.length > 0}
-			<div class="folder">
-				{#each searchNodes as child (child.id)}
-					{#if child.url} <!-- item -->
-						<div class="itemmargin">
-							<Item node={child} />
-						</div>
-					{/if}
-				{/each}
-			</div>
-		{:else}
+		<Search bind:searchQuery={searchQuery} />
+		{#if searchQuery.length === 0}
 			<div class="folder">
 				{#each currentNodeChildren as child (child.id)}
 					{#if child.url} <!-- item -->
