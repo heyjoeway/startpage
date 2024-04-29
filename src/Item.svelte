@@ -1,5 +1,5 @@
 <style lang="scss">
-    
+
 .item {
     width: 256px;
 

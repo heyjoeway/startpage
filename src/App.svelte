@@ -3,6 +3,8 @@
 
 :root {
     scrollbar-color: #111 #000;
+	// Always show scrollbar
+	overflow-y: overlay;
 }
 
 #categories {
@@ -46,6 +48,26 @@
 	}
 }
 
+#edit {
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 22px;
+    transform: scaleX(-100%);
+    transition: ease-out color 0.1s;
+	
+	&:hover {
+		color: rgba(255,255,255,0.8);
+	}
+}
+
+
 </style>
 
 <script lang="ts">
@@ -55,6 +77,8 @@ import Item from "./Item.svelte";
 import Title from "./Title.svelte";
 
 import { blurFall, blurSink } from "./Animations";
+import type { FormEventHandler } from "svelte/elements";
+import Clickable from "./Clickable.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 
@@ -97,7 +121,7 @@ $: {
 
 let searchQuery = "";
 let searchNodes: chrome.bookmarks.BookmarkTreeNode[] = [];
-function search(event: InputEvent) {
+function search(event: FormEventHandler<HTMLInputElement>) {
 	searchQuery = (event.target as HTMLInputElement).value;
 	if (searchQuery === "") {
 		searchNodes = [];
@@ -109,16 +133,26 @@ function search(event: InputEvent) {
 	});
 }
 
-function onSearchEnterKey(event: KeyboardEvent) {
-}
-
 </script>
 
 <Background />
 
+<div id="edit">
+	<Clickable
+		onClick={() => {
+			chrome.tabs.create({ url: `chrome://bookmarks?id=${currentNode?.id}` });
+		}}
+		width="48px"
+		height="48px"
+	>
+		&#x270e;			
+	</Clickable>
+</div>
+
 {#if nodeStack.length === 1}
 	<div style="position:absolute" in:blurFall out:blurSink>
 		<!-- Search box -->
+		<!-- svelte-ignore a11y-autofocus -->
 		<input
 			id="search"
 			type="text"
