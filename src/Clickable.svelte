@@ -32,7 +32,7 @@ a:hover {
 </style>
 
 <script lang="ts">
-    export let width: strin = "default";
+    export let width: string = "default";
     export let height: string = "default";
     export let onClick: (() => void) | string | undefined = undefined;
     

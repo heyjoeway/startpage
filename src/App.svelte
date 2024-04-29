@@ -121,7 +121,7 @@ $: {
 
 let searchQuery = "";
 let searchNodes: chrome.bookmarks.BookmarkTreeNode[] = [];
-function search(event: FormEventHandler<HTMLInputElement>) {
+function search(event: Event) {
 	searchQuery = (event.target as HTMLInputElement).value;
 	if (searchQuery === "") {
 		searchNodes = [];
@@ -133,15 +133,17 @@ function search(event: FormEventHandler<HTMLInputElement>) {
 	});
 }
 
+function openEditor() {
+	chrome.tabs.create({ url: `chrome://bookmarks?id=${currentNode?.id}` });
+}
+
 </script>
 
 <Background />
 
 <div id="edit">
 	<Clickable
-		onClick={() => {
-			chrome.tabs.create({ url: `chrome://bookmarks?id=${currentNode?.id}` });
-		}}
+		onClick={openEditor}
 		width="48px"
 		height="48px"
 	>
