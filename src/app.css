@@ -3,7 +3,15 @@
   color: white;
 }
 
+html {
+  overflow-x: hidden;
+  scrollbar-color: #111 #000;
+	overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 body {
+  padding: 32px;
   margin: 0;
   display: flex;
   /* place-items: center; */
@@ -11,7 +19,7 @@ body {
   justify-content: center;
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 #app {
@@ -19,7 +27,7 @@ body {
 	width: calc((256px + (4px * 2)) * 3);
   min-height: 600px;
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
   text-align: center;
   position: relative;
 }

@@ -13,6 +13,7 @@
 
 <script lang="ts">
     export let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
+    export let onClick: (index: number) => void = () => {};
 </script>
 
 <div id="breadcrumbs">
@@ -23,7 +24,7 @@
             <span
                 class="breadcrumb"
                 on:click={() => {
-                    nodeStack = nodeStack.slice(0, index + 1);
+                    onClick(index);
                 }}
             >
                 {node.title} &#x25B6;

@@ -1,10 +1,15 @@
 <style lang="scss">
 
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
 .folder {
 	display: flex;
 	flex-direction: row;
-	// justify-content: center;
-	width: fit-content;
+	width: 100%;
 	flex-wrap: wrap;
 	
 	.itemmargin {
@@ -12,24 +17,29 @@
 	}
 }
 
+.align-center {
+	justify-content: center;
+}
+
 </style>
 
 <script lang="ts">
-    import Item from "./Item.svelte";
-    export let showSubFolders: boolean = false;
-    export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
-    export let currentNodeChildren: chrome.bookmarks.BookmarkTreeNode[];
+	import Item from "./Item.svelte";
+	export let showSubFolders: boolean = false;
+	export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
+	export let nodes: chrome.bookmarks.BookmarkTreeNode[];
+	export let alignCenter: boolean = false;
 </script>
 
-<div class="folder">
-    {#each currentNodeChildren as child (child.id)}
-        {#if child.url || (showSubFolders && !child.url)} <!-- item -->
-            <div class="itemmargin">
-                <Item
-                    node={child}
-                    onFolderClick={onFolderClick}
-                />
-            </div>
-        {/if}
-    {/each}
+<div class="folder {alignCenter ? "align-center" : ""}">
+	{#each nodes as child (child.id)}
+		{#if child.url || (showSubFolders && !child.url)} <!-- item -->
+			<div class="itemmargin">
+				<Item
+					node={child}
+					onFolderClick={onFolderClick}
+				/>
+			</div>
+		{/if}
+	{/each}
 </div>

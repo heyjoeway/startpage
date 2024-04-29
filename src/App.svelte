@@ -1,12 +1,6 @@
 <style lang="scss">
 @import "./style/fonts.scss";
 
-:root {
-    scrollbar-color: #111 #000;
-	// Always show scrollbar
-	overflow-y: overlay;
-}
-
 #categories {
     display: flex;
     justify-content: center;
@@ -38,7 +32,6 @@
 <script lang="ts">
 import Background from "./Background.svelte";
 import Category from "./Category.svelte";
-import Item from "./Item.svelte";
 import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
@@ -107,11 +100,14 @@ function openEditor() {
 </div>
 
 {#if nodeStack.length === 1}
-	<div style="position:absolute" in:blurFall out:blurSink>
-		<Search bind:searchQuery={searchQuery} />
+	<div style="position:absolute;width:100%" in:blurFall out:blurSink>
+		<Search
+			rootNode={nodeStack[0]}
+			bind:searchQuery={searchQuery}
+		/>
 
 		{#if searchQuery.length === 0}
-			<Folder bind:currentNodeChildren={currentNodeChildren} />
+			<Folder bind:nodes={currentNodeChildren} />
 
 			<div id="categories">
 				{#each currentNodeChildren as child, index (child.id)}
@@ -138,14 +134,19 @@ function openEditor() {
 	style="position:absolute;"
 >
 
-	<Breadcrumbs bind:nodeStack={nodeStack} />
+	<Breadcrumbs
+		nodeStack={nodeStack}
+		onClick={index => {
+			nodeStack = nodeStack.slice(0, index + 1);
+		}}
+	/>
 
 	<Title color="white">
 		{currentNode?.title}
 	</Title>
 	
 	<Folder
-		bind:currentNodeChildren={currentNodeChildren}
+		bind:nodes={currentNodeChildren}
 		showSubFolders={true}
 		onFolderClick={node => {
 			nodeStack = [...nodeStack, node];
