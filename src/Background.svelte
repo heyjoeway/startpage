@@ -11,6 +11,7 @@
     font-weight: bold;
     
     user-select: none;
+    pointer-events: none;
 }
 
 #bg-top-left { 

@@ -12,9 +12,7 @@
     opacity: 75%;
     /* padding-left: 52px; */
     overflow: hidden;
-    
-    animation-duration: 0.7s;
-    
+        
     display: flex;
     align-items: center;
     
@@ -90,9 +88,7 @@
 import Clickable from "./Clickable.svelte";
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
-
-let color: string = "white";
-let faviconURL: string = "";
+export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
 
 let displayURL: string;
 $: if (node.url) {
@@ -109,7 +105,11 @@ $: if (node.url) {
     displayURL = displayURL.replace(/\/$/, '');
 }
 
-$: if (node) {
+let faviconURL: string = "./folder.png";
+let onClick: string | (() => void) = "";
+$: if (node.url) {
+    onClick = node.url;
+    
     // Get domain name from URL
     let faviconDomain = node.url;
     if (faviconDomain) {
@@ -119,6 +119,8 @@ $: if (node) {
     }
     
     faviconURL = `https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${node.url}&size=128`;
+} else {
+    onClick = () => onFolderClick(node);
 };
 
 let underlineBGRepeat = 50;
@@ -126,7 +128,7 @@ let underlineBGRange = Array.from({ length: underlineBGRepeat }, (_, i) => i);
 
 </script>
 
-<Clickable onClick={node.url}>
+<Clickable onClick={onClick}>
     <div class="item">
         <div class="underline">
             <!-- yes, i'm pretty sure this is the only way without a CORS proxy. -->
@@ -140,7 +142,9 @@ let underlineBGRange = Array.from({ length: underlineBGRepeat }, (_, i) => i);
         </div>
         <div class="text">
             <div class="title">{node.title}</div>
-            <div class="url">{displayURL}</div>
+            {#if node.url}
+                <div class="url">{displayURL}</div>
+            {/if}
         </div>
     </div>
 </Clickable>
