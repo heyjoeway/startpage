@@ -11,9 +11,9 @@ function blurFall(node: HTMLElement, params?: {
 			t = quartOut(t);
 			return `
 				filter: blur(${radius * (1 - t)}px) opacity(${100 * t}%);
-				scale: ${1 + (1 - t)};
-				rotate: z ${15 * (1 - t)}deg;
 			`;
+			// scale: ${1 + (1 - t)};
+			// rotate: z ${15 * (1 - t)}deg;
 		}
 	};
 }
@@ -28,8 +28,8 @@ function blurSink(node: HTMLElement, params?: {
 			const radius = params?.radius || 64;
 			return `
 				filter: blur(${radius * (1 - t)}px) opacity(${100 * t}%);
-				scale: ${t};
 			`;
+			// scale: ${t};
 		}
 	};
 }
