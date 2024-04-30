@@ -24,11 +24,8 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Package into zip file
-        run: zip -r my-project.zip dist
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
         with:
-          name: my-project
-          path: my-project.zip
+          name: dist
+          path: dist/*
