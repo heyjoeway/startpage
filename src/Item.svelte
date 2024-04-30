@@ -84,6 +84,7 @@
 </style>
 
 <script lang="ts">
+import { UAParser } from 'ua-parser-js';
 
 import Clickable from "./Clickable.svelte";
 
@@ -124,6 +125,10 @@ $: if (node.url) {
 };
 
 let underlineBGRepeat = 50;
+const { browser, cpu, device } = UAParser();
+if (device.type === "mobile") {
+    underlineBGRepeat = 1;
+}
 let underlineBGRange = Array.from({ length: underlineBGRepeat }, (_, i) => i);
 
 </script>
