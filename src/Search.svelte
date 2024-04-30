@@ -8,6 +8,7 @@
 	background: rgba(255, 255, 255, 0.1);
 	backdrop-filter: blur(32px);
 	color: white;
+    box-sizing: border-box;
 	
 	&:focus {
 		outline: none;

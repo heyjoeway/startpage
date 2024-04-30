@@ -1,8 +1,8 @@
 <style lang="scss">
 
 .category {
-    padding-top: 24px;
-    padding-bottom: 24px;
+    padding-top: 16px;
+    padding-bottom: 8px;
 }
 
 </style>

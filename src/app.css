@@ -11,23 +11,12 @@ html {
 }
 
 body {
-  padding: 32px;
   margin: 0;
-  display: flex;
-  /* place-items: center; */
-  align-items: center;
-  justify-content: center;
-  min-width: 320px;
-  min-height: 100vh;
-  box-sizing: border-box;
 }
 
 #app {
-	max-width: calc(min((256px + (4px * 2)) * 3, 100vw - 24px));
-	width: calc((256px + (4px * 2)) * 3);
-  min-height: 600px;
-  margin: 0 auto;
-  /* padding: 2rem; */
-  text-align: center;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }

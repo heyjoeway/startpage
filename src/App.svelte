@@ -26,6 +26,14 @@
 	}
 }
 
+#container {
+	position: absolute;
+	max-width: 808px;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 8px;
+	top: 14vh;
+}
 
 </style>
 
@@ -100,7 +108,7 @@ function openEditor() {
 </div>
 
 {#if nodeStack.length === 1}
-	<div style="position:absolute;width:100%" in:blurFall out:blurSink>
+	<div id="container" in:blurFall out:blurSink>
 		<Search
 			rootNode={nodeStack[0]}
 			bind:searchQuery={searchQuery}
@@ -131,7 +139,7 @@ function openEditor() {
 <div
 	in:blurFall|global
 	out:blurSink|global
-	style="position:absolute;"
+	id="container"
 >
 
 	<Breadcrumbs
