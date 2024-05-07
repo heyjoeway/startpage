@@ -8,10 +8,6 @@ This was previously a fork of [hello-friend](https://github.com/jaywick/hello-fr
 
 ![Screenshot preview of the startpage extension on a new tab](./PREVIEW.png)
 
-## WARNING
-
-This sends domain URLs to Google to get high quality favicons and highlight colors. I'm planning to add configuration options to turn this off. Pull requests with solutions to this are welcome.
-
 ## Requirements
 
 - Node/npm v18+

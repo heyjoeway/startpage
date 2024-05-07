@@ -37,7 +37,7 @@
 
 </style>
 
-<script lang="ts">
+<script lang="ts">	
 import Background from "./Background.svelte";
 import Category from "./Category.svelte";
 import Title from "./Title.svelte";

@@ -1,7 +1,13 @@
 {
     "name": "start",
     "description": "My new tab page",
-    "permissions": ["bookmarks"],
+    "permissions": [
+        "bookmarks"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
     "icons": {
         "16": "icons/16.png",
         "48": "icons/48.png",
@@ -11,10 +17,9 @@
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
-    "manifest_version": 2,
-    "applications": {
-        "gecko": {
-            "id": "ext@com.jojudge.start"
-        }
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "bg.js",
+        "type": "module"
     }
 }

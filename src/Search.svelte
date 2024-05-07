@@ -60,7 +60,6 @@ function search(event: Event) {
     on:keydown={event => {
         if (event.key !== "Enter") return;
         // Open first search result
-        console.log(searchNodes[0]);
         searchNodes[0]?.url && window.open(searchNodes[0].url, "_self");
     }}
 />
