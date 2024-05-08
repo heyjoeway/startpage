@@ -1,0 +1,74 @@
+<style lang="scss">
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.outer-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-container {
+    width: 600px;
+    margin: 8px;
+    
+    border-width: 1px;
+    border-style: solid;
+    border-color: #222;
+    background-color: #2e2e2e66;
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    
+    padding: 16px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.footer {
+    margin-top: 16px;
+    text-align: right;
+}
+
+</style>
+
+<script lang="ts">
+    import Overlay from "./Overlay.svelte";
+    
+    export let open: boolean = false;
+</script>
+
+{#if open}
+
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<Overlay>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="bg"></div>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="outer-container" on:click={() => open = false}>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div class="inner-container" on:click|stopPropagation>
+            <h1><slot name="header"></slot></h1>
+            <slot name="body"></slot>
+            <div class="footer"><slot name="footer"></slot></div>
+        </div>
+    </div>
+</Overlay>
+
+{/if}

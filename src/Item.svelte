@@ -96,6 +96,9 @@ const faviconCache = persisted('faviconCache', {} as CacheInterface);
 const colorCache = persisted('colorCache', {} as CacheInterface);
 
 import Clickable from "./Clickable.svelte";
+import ContextMenu from './ContextMenu.svelte';
+import ContextMenuItem from './ContextMenuItem.svelte';
+import Modal from './Modal.svelte';
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -298,10 +301,39 @@ async function updateFavicon() {
     $colorCache[url] = color;
 }
 
+let menuOpen = false;
+let menuX: number, menuY: number;
 
+function openMenu(event: MouseEvent) {
+    event.preventDefault();
+    menuX = event.clientX;
+    menuY = event.clientY;
+    menuOpen = true;
+}
+
+let deleteModalOpen = false;
+$: if (deleteModalOpen) menuOpen = false;
 </script>
 
-<Clickable onClick={onClick}>
+<Modal bind:open={deleteModalOpen}>
+    <span slot="header">Delete</span>
+    <div slot="body">
+        Are you sure you want to delete "{node.title}"?
+    </div>
+    <div slot="footer">
+        <button on:click={() => {
+            chrome.bookmarks.remove(node.id);
+            deleteModalOpen = false;
+        }}>Delete</button>
+        <button on:click={() => deleteModalOpen = false}>Cancel</button>
+    </div>
+</Modal>
+
+<ContextMenu bind:open={menuOpen} bind:x={menuX} bind:y={menuY}>
+    <ContextMenuItem onClick={() => deleteModalOpen = true}>Delete</ContextMenuItem>
+</ContextMenu>
+
+<Clickable onClick={onClick} onContextMenu={openMenu}>
     <div class="item">
         <div class="underline" style="background-color:{color}"></div>
         <div class="favicon">

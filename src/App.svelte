@@ -44,6 +44,7 @@ import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
+import Overlay from "./Overlay.svelte";
 
 import { blurFall, blurSink } from "./Animations";
 import Clickable from "./Clickable.svelte";
@@ -56,19 +57,34 @@ const colors = [
 	"skyblue"
 ]
 
-chrome.bookmarks.getTree(
-	itemsRaw => {
-		const bookmarkBarRegex = /(bookmarks (tool)?bar|favou?rites bar|mobile bookmarks)/i;
-		let rootNode = itemsRaw[0];
-		let rootNodeCandidate = itemsRaw[0]?.children?.find(
-			x => bookmarkBarRegex.test(x.title)
-		);
-		if (rootNodeCandidate) {
-			rootNode = rootNodeCandidate;
-		}
-		nodeStack = [rootNode];
+async function getNodeRoot() {
+	let itemsRaw = await chrome.bookmarks.getTree();
+	
+	const bookmarkBarRegex = /(bookmarks (tool)?bar|favou?rites bar|mobile bookmarks)/i;
+	let rootNode = itemsRaw[0];
+	let rootNodeCandidate = itemsRaw[0]?.children?.find(
+		x => bookmarkBarRegex.test(x.title)
+	);
+	if (rootNodeCandidate) {
+		rootNode = rootNodeCandidate;
 	}
-);
+	return rootNode;
+}
+
+(async () => nodeStack = [await getNodeRoot()])();
+
+async function refreshNodeStack() {
+	let newStack = [];
+	for (let i = 0; i < nodeStack.length; i++) {
+		newStack.push((await chrome.bookmarks.getSubTree(nodeStack[i].id))[0]);
+	}
+	nodeStack = newStack;
+}
+
+chrome.bookmarks.onChanged.addListener(refreshNodeStack);
+chrome.bookmarks.onMoved.addListener(refreshNodeStack);
+chrome.bookmarks.onRemoved.addListener(refreshNodeStack);
+chrome.bookmarks.onCreated.addListener(refreshNodeStack);
 
 let currentNodeChildren: chrome.bookmarks.BookmarkTreeNode[] = [];
 let currentNode: chrome.bookmarks.BookmarkTreeNode | undefined = undefined;
@@ -136,6 +152,7 @@ function openEditor() {
 {#if nodeStack.length > 1}
 
 {#key currentNode?.id}
+
 <div
 	in:blurFall|global
 	out:blurSink|global
