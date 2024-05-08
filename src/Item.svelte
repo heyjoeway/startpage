@@ -253,7 +253,18 @@ let color: string = "";
 async function updateFavicon() {
     let faviconURL = "/favicon.ico";
     
-    let $ = cheerio.load(nodeHTML);
+    let $: cheerio.CheerioAPI;
+    
+    if (isYoutubeStreamPermalink) {
+        // Remove "/live" from URL
+        let url = node.url as string;
+        url = url.replace(/\/live$/, '');
+        let tempHTML = await bgFetchText(url);
+        $ = cheerio.load(tempHTML);
+    } else {
+        $ = cheerio.load(nodeHTML);
+    }
+    
     let url = node.url as string;
     
     // Parse html to find favicon
