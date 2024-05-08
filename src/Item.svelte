@@ -222,19 +222,25 @@ async function updateHTML(url: string) {
         url += "?nocache=" + Date.now();
     }
     nodeHTML = await bgFetchText(url);
-
+    let $ = cheerio.load(nodeHTML);
+    // "isLiveBroadcast" means that the page is for a live stream, not that the stream is currently live
+    let isLiveBroadcast = $("meta[itemprop*='isLiveBroadcast']").attr("content")?.toLowerCase() === "true";
+    let startDateRaw = $("meta[itemprop*='startDate']").attr("content");
+    let isCurrentlyLive = false;
+    if (startDateRaw) {
+        let startDate = new Date(startDateRaw);
+        let startDateInFuture = startDate > new Date();
+        isCurrentlyLive = isLiveBroadcast && !startDateInFuture;
+    }
+    
     if (isTwitchStream || isYoutubeStreamPermalink) {
-        if (nodeHTML.includes("isLiveBroadcast")) {
-            liveStreamStatus = LiveStreamStatus.Live;
-        } else {
-            liveStreamStatus = LiveStreamStatus.Offline;
-        }
+        liveStreamStatus = isCurrentlyLive ?
+            LiveStreamStatus.Live :
+            LiveStreamStatus.Offline;
     } else if (isYoutubeStreamVideo) {
-        if (nodeHTML.includes("isLiveBroadcast")) {
-            liveStreamStatus = LiveStreamStatus.Live;
-        } else {
-            liveStreamStatus = LiveStreamStatus.NA;
-        }
+        liveStreamStatus = isCurrentlyLive ?
+            LiveStreamStatus.Live :
+            LiveStreamStatus.Offline; 
     }
     
     let faviconCacheHit = $faviconCache[node.url as string];    
