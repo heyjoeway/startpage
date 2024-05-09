@@ -24,6 +24,7 @@ div {
         
         &::placeholder {
             color: var(--placeholder-color);
+            user-select: none;
         }
     }
 }

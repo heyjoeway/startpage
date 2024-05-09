@@ -87,6 +87,8 @@
 import * as cheerio from 'cheerio';
 import { persisted } from 'svelte-persisted-store'
 import { FastAverageColor } from 'fast-average-color';
+import Fa from 'svelte-fa'
+import { faFolder } from '@fortawesome/free-solid-svg-icons'
 
 interface CacheInterface {
     [key: string]: string;
@@ -211,7 +213,6 @@ $: if (node.url) {
     displayURL = "";
     liveStreamStatus = LiveStreamStatus.NA;
     onClick = () => onFolderClick(node);
-    faviconContent = "./folder.png";
 };
 
 // We should only need to run this once per instantiation
@@ -323,7 +324,7 @@ $: if (editModalOpen) menuOpen = false;
 let editTitle = node.title;
 let editURL = node.url;
 
-let isFolder = !!node.url;
+let isFolder = !node.url;
 
 </script>
 
@@ -333,16 +334,21 @@ let isFolder = !!node.url;
         style:display="flex"
         style:gap="16px"
         style:flex-direction="row"
-    >
-        <!-- svelte-ignore a11y-missing-attribute -->
-        <img
-            style:user-select="none"
-            src="{faviconContent}"
-            width="48" height="48"
-        />
+    >        
+        {#if isFolder}
+            <Fa icon={faFolder} color={$Theme.item.folder.color} size="3x" />
+        {:else}
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <img
+                style:user-select="none"
+                src="{faviconContent}"
+                width="48" height="48"
+            />
+        {/if}
+        
         <div style:flex-grow=1>
             <Textfield label="Name" bind:value={editTitle} /><br>
-            {#if isFolder}
+            {#if !isFolder}
                 <br>
                 <Textfield label="URL" bind:value={editURL} /><br>
             {/if}
@@ -359,7 +365,7 @@ let isFolder = !!node.url;
             onClick={() => {
                 chrome.bookmarks.update(node.id, {
                     title: editTitle,
-                    url: isFolder ? editURL : undefined
+                    url: isFolder ? undefined : editURL
                 });
                 editModalOpen = false;
             }}
@@ -407,8 +413,12 @@ let isFolder = !!node.url;
     <div class="item">
         <div class="underline" style:background-color={color}></div>
         <div class="favicon">
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <img src="{faviconContent}" />
+            {#if isFolder}
+                <Fa icon={faFolder} color={$Theme.item.folder.color} size="lg" />
+                {:else}
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <img src="{faviconContent}" />
+            {/if}
         </div>
         <div class="text">
             <div class="title" style:color={$Theme.text.primary.color}>

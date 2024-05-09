@@ -84,9 +84,10 @@ h1 {
             style:background-color={$Theme.frame.background.color}
             style:border-color={$Theme.frame.border.color}
             style:border-width={$Theme.frame.border.width}
+            style:color={$Theme.text.primary.color}
             on:click|stopPropagation
         >
-            <h1 style:color={$Theme.text.primary.color}><slot name="header"></slot></h1>
+            <h1><slot name="header"></slot></h1>
             <slot name="body"></slot>
             <div class="footer"><slot name="footer"></slot></div>
         </div>
