@@ -6,6 +6,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px);
 }
 
 .outer-container {
@@ -20,7 +21,7 @@
 }
 
 .inner-container {
-    width: 600px;
+    width: 350px;
     margin: 8px;
     
     border-width: 1px;
@@ -37,6 +38,7 @@
 
 h1 {
     margin-top: 0;
+    user-select: none;
 }
 
 .footer {
@@ -47,6 +49,9 @@ h1 {
 </style>
 
 <script lang="ts">
+    import { fade } from 'svelte/transition';
+    import { quartOut } from 'svelte/easing';
+    
     import Overlay from "./Overlay.svelte";
     
     export let open: boolean = false;
@@ -58,9 +63,22 @@ h1 {
 <Overlay>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="bg"></div>
+    <div
+        class="bg"
+        transition:fade={{
+            duration: 500,
+            easing: quartOut
+        }}
+    />
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="outer-container" on:click={() => open = false}>
+    <div
+        class="outer-container"
+        on:click={() => open = false}
+        transition:fade={{
+            duration: 100,
+            easing: quartOut
+        }}
+    >
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div class="inner-container" on:click|stopPropagation>

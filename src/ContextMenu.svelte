@@ -21,6 +21,7 @@ div {
 <script lang="ts">
 
 import { clickoutside } from '@svelte-put/clickoutside';
+import { fade } from 'svelte/transition';
 
 import Overlay from "./Overlay.svelte";
 
@@ -28,12 +29,12 @@ export let open: boolean = false;
 
 export let x, y: number;
 
-
 </script>
 
 {#if open}
     <Overlay>
         <div
+            transition:fade={{ duration: 100 }}
             use:clickoutside={{ event: 'mousedown' }}
             on:clickoutside={() => open = false}
             style="top:{y}px; left:{x}px;"

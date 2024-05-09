@@ -1,24 +1,7 @@
-<style lang="scss">
-    
-#search {
-	width: 100%;
-	border: none;
-	padding: 10px 12px;
-	border-radius: 24px;
-	background: rgba(255, 255, 255, 0.1);
-	backdrop-filter: blur(32px);
-	color: white;
-    box-sizing: border-box;
-	
-	&:focus {
-		outline: none;
-	}
-}
-
-</style>
-
 <script lang="ts">
 import Folder from "./Folder.svelte";
+import Textfield from "./Textfield.svelte";
+
 import Fuse from 'fuse.js'
 
 export let searchQuery = "";
@@ -49,15 +32,12 @@ function search(event: Event) {
 
 </script>
 
-<!-- svelte-ignore a11y-autofocus -->
-<input
-    id="search"
-    type="text"
+<Textfield
     placeholder="Search Bookmarks..."
     autofocus
     bind:value={searchQuery}
-    on:input={search}
-    on:keydown={event => {
+    onInput={search}
+    onKeydown={event => {
         if (event.key !== "Enter") return;
         // Open first search result
         searchNodes[0]?.url && window.open(searchNodes[0].url, "_self");

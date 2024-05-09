@@ -99,6 +99,8 @@ import Clickable from "./Clickable.svelte";
 import ContextMenu from './ContextMenu.svelte';
 import ContextMenuItem from './ContextMenuItem.svelte';
 import Modal from './Modal.svelte';
+import Textfield from './Textfield.svelte';
+import Button from './Button.svelte';
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -313,23 +315,91 @@ function openMenu(event: MouseEvent) {
 
 let deleteModalOpen = false;
 $: if (deleteModalOpen) menuOpen = false;
+
+let editModalOpen = false;
+$: if (editModalOpen) menuOpen = false;
+
+let editTitle = node.title;
+let editURL = node.url;
+
+let isFolder = !!node.url;
+
 </script>
+
+<Modal bind:open={editModalOpen}>
+    <span slot="header">Edit</span>
+    <div slot="body"
+        style:display="flex"
+        style:gap="16px"
+        style:flex-direction="row"
+    >
+        <!-- svelte-ignore a11y-missing-attribute -->
+        <img
+            style:user-select="none"
+            src="{faviconContent}"
+            width="48" height="48"
+        />
+        <div style:flex-grow=1>
+            <Textfield label="Name" bind:value={editTitle} /><br>
+            {#if isFolder}
+                <br>
+                <Textfield label="URL" bind:value={editURL} /><br>
+            {/if}
+        </div>
+    </div>
+    <div
+        style:display="flex"
+        style:gap="16px"
+        style:flex-direction="row"
+        style:justify-content="flex-end"
+        slot="footer"
+    >
+        <Button
+            color="lightgreen"
+            onClick={() => {
+                chrome.bookmarks.update(node.id, {
+                    title: editTitle,
+                    url: isFolder ? editURL : undefined
+                });
+                editModalOpen = false;
+            }}
+        >
+            Save
+        </Button>
+        <Button onClick={() => editModalOpen = false}>Cancel</Button>
+    </div>
+</Modal>
 
 <Modal bind:open={deleteModalOpen}>
     <span slot="header">Delete</span>
     <div slot="body">
         Are you sure you want to delete "{node.title}"?
     </div>
-    <div slot="footer">
-        <button on:click={() => {
-            chrome.bookmarks.remove(node.id);
-            deleteModalOpen = false;
-        }}>Delete</button>
-        <button on:click={() => deleteModalOpen = false}>Cancel</button>
+    <div
+        style:display="flex"
+        style:gap="16px"
+        style:flex-direction="row"
+        style:justify-content="flex-end"
+        slot="footer"
+    >
+        <Button
+            color="red"
+            onClick={() => {
+                chrome.bookmarks.remove(node.id);
+                deleteModalOpen = false;
+            }}
+        >
+            Delete
+        </Button>
+        <Button onClick={() => deleteModalOpen = false}>
+            Cancel
+        </Button>
     </div>
 </Modal>
 
+
 <ContextMenu bind:open={menuOpen} bind:x={menuX} bind:y={menuY}>
+    <ContextMenuItem onClick={() => editModalOpen = true}>Edit</ContextMenuItem>
     <ContextMenuItem onClick={() => deleteModalOpen = true}>Delete</ContextMenuItem>
 </ContextMenu>
 
