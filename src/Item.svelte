@@ -101,6 +101,7 @@ import ContextMenuItem from './ContextMenuItem.svelte';
 import Modal from './Modal.svelte';
 import Textfield from './Textfield.svelte';
 import Button from './Button.svelte';
+import Theme from './Theme';
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -347,15 +348,14 @@ let isFolder = !!node.url;
             {/if}
         </div>
     </div>
-    <div
+    <div slot="footer"
         style:display="flex"
         style:gap="16px"
         style:flex-direction="row"
         style:justify-content="flex-end"
-        slot="footer"
     >
         <Button
-            color="lightgreen"
+            color={$Theme.action.colors.confirm}
             onClick={() => {
                 chrome.bookmarks.update(node.id, {
                     title: editTitle,
@@ -383,7 +383,7 @@ let isFolder = !!node.url;
         slot="footer"
     >
         <Button
-            color="red"
+            color={$Theme.action.colors.danger}
             onClick={() => {
                 chrome.bookmarks.remove(node.id);
                 deleteModalOpen = false;
@@ -405,27 +405,31 @@ let isFolder = !!node.url;
 
 <Clickable onClick={onClick} onContextMenu={openMenu}>
     <div class="item">
-        <div class="underline" style="background-color:{color}"></div>
+        <div class="underline" style:background-color={color}></div>
         <div class="favicon">
             <!-- svelte-ignore a11y-missing-attribute -->
             <img src="{faviconContent}" />
         </div>
         <div class="text">
-            <div class="title">{node.title}</div>
+            <div class="title" style:color={$Theme.text.primary.color}>
+                {node.title}
+            </div>
             {#if liveStreamStatus == LiveStreamStatus.Loading}
-                <div class="url" style="color:orange">
+                <div class="url" style:color={$Theme.item.liveStream.colorChecking}>
                     &#x2B24;&nbsp;&nbsp;Checking...
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Live}
-                <div class="url" style="color:red">
+                <div class="url" style:color={$Theme.item.liveStream.colorOnline}>
                     &#x2B24;&nbsp;&nbsp;Live
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Offline}
-                <div class="url">
+                <div class="url" style:color={$Theme.text.secondary.color}>
                     &#x2B24;&nbsp;&nbsp;Offline
                 </div>
             {:else if node.url}
-                <div class="url">{displayURL}</div>
+                <div class="url" style:color={$Theme.text.secondary.color}>
+                    {displayURL}
+                </div>
             {/if}
         </div>
     </div>

@@ -16,13 +16,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255,255,255,0.5);
+	opacity: 0.5;
     font-size: 22px;
     transform: scaleX(-100%);
-    transition: ease-out color 0.1s;
+    transition: ease-out opacity 0.1s;
 	
 	&:hover {
-		color: rgba(255,255,255,0.8);
+		opacity: 0.8;
 	}
 }
 
@@ -44,18 +44,12 @@ import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
-import Overlay from "./Overlay.svelte";
+import Theme from "./Theme";
 
 import { blurFall, blurSink } from "./Animations";
 import Clickable from "./Clickable.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
-
-const colors = [
-	"orange",
-	"palevioletred",
-	"skyblue"
-]
 
 async function getNodeRoot() {
 	let itemsRaw = await chrome.bookmarks.getTree();
@@ -113,7 +107,9 @@ function openEditor() {
 
 <Background />
 
-<div id="edit">
+<div id="edit"
+	style:color={$Theme.text.primary.color}
+>
 	<Clickable
 		onClick={openEditor}
 		width="48px"
@@ -138,7 +134,7 @@ function openEditor() {
 					{#if child.children} <!-- folder -->
 						<Category
 							node={child}
-							color={colors[index % colors.length]}
+							color={$Theme.category.colors[index % $Theme.category.colors.length]}
 							onFolderClick={node => {
 								nodeStack = [...nodeStack, node];
 							}}
@@ -166,7 +162,7 @@ function openEditor() {
 		}}
 	/>
 
-	<Title color="white">
+	<Title color={$Theme.text.primary.color}>
 		{currentNode?.title}
 	</Title>
 	

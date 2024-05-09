@@ -21,11 +21,12 @@ img:not([src]) {
 
 <script lang="ts">
     import Clickable from "./Clickable.svelte";
+    import Theme from "./Theme";
     
     export let onClick: ((event: MouseEvent) => void) | string | undefined = undefined;
     export let iconSrc: string = "";
     
-    export let color: string = "white";
+    export let color: string = $Theme.text.primary.color;
 </script>
 
 <Clickable height='32px' onClick={onClick}>

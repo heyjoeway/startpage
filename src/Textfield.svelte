@@ -7,7 +7,6 @@ div {
     label {
         margin-left: 12px;
         margin-bottom: 4px;
-        opacity: 0.5;
         user-select: none  ;
     }
     
@@ -16,13 +15,15 @@ div {
         border: none;
         padding: 10px 12px;
         border-radius: 24px;
-        background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(32px);
-        color: white;
         box-sizing: border-box;
         
         &:focus {
             outline: none;
+        }
+        
+        &::placeholder {
+            color: var(--placeholder-color);
         }
     }
 }
@@ -31,6 +32,8 @@ div {
 </style>
 
 <script lang="ts">
+
+import Theme from "./Theme";
 
 export let value: string = "";
 export let label: string = "";
@@ -44,7 +47,11 @@ export let onKeydown: (event: KeyboardEvent) => void = () => {};
 
 <div>
     {#if label}
-        <label for={label}>{label}</label>
+        <label for={label}
+            style:color={$Theme.text.secondary.color}
+        >
+            {label}
+        </label>
     {/if}
     <!-- svelte-ignore a11y-autofocus -->
     <input
@@ -52,6 +59,9 @@ export let onKeydown: (event: KeyboardEvent) => void = () => {};
         type="text"
         placeholder={placeholder}
         autofocus={autofocus}
+        style="--placeholder-color: {$Theme.text.secondary.color}"
+        style:color={$Theme.text.primary.color}
+        style:background-color={$Theme.textfield.background.color}
         bind:value={value}
         on:input={onInput}
         on:keydown={onKeydown}

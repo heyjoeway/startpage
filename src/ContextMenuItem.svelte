@@ -24,13 +24,14 @@ img:not([src]) {
 
 <script lang="ts">
     import Clickable from "./Clickable.svelte";
+    import Theme from "./Theme";
     
     export let onClick: ((event: MouseEvent) => void) | string | undefined = undefined;
     export let iconSrc: string = "";
 </script>
 
 <Clickable width='100%' height='24px' onClick={onClick}>
-    <div>
+    <div style:color={$Theme.text.primary.color}>
         <!-- svelte-ignore a11y-missing-attribute -->
         <img src={iconSrc} />
         <slot />

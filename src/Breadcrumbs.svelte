@@ -6,17 +6,18 @@
     margin-left: 12px;
     user-select: none;
     cursor: pointer;
-    color: #888;
 }
 
 </style>
 
 <script lang="ts">
+    import Theme from "./Theme";
+    
     export let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
     export let onClick: (index: number) => void = () => {};
 </script>
 
-<div id="breadcrumbs">
+<div id="breadcrumbs" style:color={$Theme.text.secondary.color}>
     {#each nodeStack as node, index (node.id)}
         {#if index < nodeStack.length - 1}
             <!-- svelte-ignore a11y-click-events-have-key-events -->

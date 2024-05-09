@@ -4,10 +4,7 @@ div {
     min-width: 200px;
     position: absolute;
 
-    border-width: 1px;
     border-style: solid;
-    border-color: #222;
-    background-color: #2e2e2e66;
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
     
@@ -19,6 +16,8 @@ div {
 </style>
 
 <script lang="ts">
+    
+import Theme from './Theme';
 
 import { clickoutside } from '@svelte-put/clickoutside';
 import { fade } from 'svelte/transition';
@@ -37,7 +36,11 @@ export let x, y: number;
             transition:fade={{ duration: 100 }}
             use:clickoutside={{ event: 'mousedown' }}
             on:clickoutside={() => open = false}
-            style="top:{y}px; left:{x}px;"
+            style:background-color={$Theme.frame.background.color}
+            style:border-color={$Theme.frame.border.color}
+            style:border-width={$Theme.frame.border.width}
+            style:top="{y}px"
+            style:left="{x}px"
         >
             <slot />
         </div>

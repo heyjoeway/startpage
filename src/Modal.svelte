@@ -24,10 +24,7 @@
     width: 350px;
     margin: 8px;
     
-    border-width: 1px;
     border-style: solid;
-    border-color: #222;
-    background-color: #2e2e2e66;
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
     
@@ -49,6 +46,8 @@ h1 {
 </style>
 
 <script lang="ts">
+    import Theme from './Theme';
+    
     import { fade } from 'svelte/transition';
     import { quartOut } from 'svelte/easing';
     
@@ -81,8 +80,13 @@ h1 {
     >
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div class="inner-container" on:click|stopPropagation>
-            <h1><slot name="header"></slot></h1>
+        <div class="inner-container"
+            style:background-color={$Theme.frame.background.color}
+            style:border-color={$Theme.frame.border.color}
+            style:border-width={$Theme.frame.border.width}
+            on:click|stopPropagation
+        >
+            <h1 style:color={$Theme.text.primary.color}><slot name="header"></slot></h1>
             <slot name="body"></slot>
             <div class="footer"><slot name="footer"></slot></div>
         </div>

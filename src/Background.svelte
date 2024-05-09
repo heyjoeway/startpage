@@ -2,7 +2,6 @@
 .bg-element {   
     position: fixed;
     font-size: 350px;
-    opacity: 0.075;
     
 	animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
 	animation-duration: 1s;
@@ -25,13 +24,15 @@
 
 @keyframes blur-in-top {
     from {
-        -webkit-filter: contrast(1.5) brightness(1.5) grayscale(1) blur(128px) opacity(0%);
-        filter: contrast(1.5) brightness(1.5) grayscale(1) blur(128px) opacity(0%);
+        -webkit-filter: blur(128px);
+        filter: blur(128px);
+        opacity: 0;
         transform: scale(2) rotateZ(15deg);
     }
     to {
-        -webkit-filter: contrast(1.5) brightness(0.7) grayscale(1) blur(calc(min(40vw, 350px) / 32)) opacity(100%);
-        filter: contrast(1.5) brightness(0.7) grayscale(1) blur(calc(min(40vw, 350px) / 32)) opacity(100%);
+        -webkit-filter: blur(calc(min(40vw, 350px) / 32));
+        filter: blur(calc(min(40vw, 350px) / 32));
+        opacity: 1;
         transform: scale(1) rotateZ(0deg);
     }
 }
@@ -46,19 +47,23 @@
 
 @keyframes blur-in-bottom {
     from {
-        -webkit-filter: contrast(1.5) brightness(1.5) grayscale(1) blur(128px) opacity(0%);
-        filter: contrast(1.5) brightness(1.5) grayscale(1) blur(128px) opacity(0%);
+        -webkit-filter: blur(128px);
+        filter: blur(128px);
+        opacity: 0;
         transform: scale(2) rotateZ(60deg);
     }
     to {
-        -webkit-filter: contrast(1.5) brightness(0.7) grayscale(1) blur(calc(min(40vw, 350px) / 32)) opacity(100%);
-        filter: contrast(1.5) brightness(0.7) grayscale(1) blur(calc(min(40vw, 350px) / 32)) opacity(100%);
+        -webkit-filter: blur(calc(min(40vw, 350px) / 32));
+        filter: blur(calc(min(40vw, 350px) / 32));
+        opacity: 1;
         transform: scale(1) rotateZ(45deg);
     }
 }
 </style>
 
 <script lang="ts">
+
+import Theme from "./Theme";
 
 function randomElement(arr: any[]) {
     return arr[Math.round(Math.random() * (arr.length - 1))];
@@ -68,5 +73,22 @@ let roll = randomElement(htmlDiceEntities);
 
 </script>
 
-<div class="bg-element" id="bg-top-left">start</div>
-<div class="bg-element" id="bg-bottom-right">{@html roll}</div>
+<div
+    style:position="fixed"
+    style:top="0"
+    style:left="0"
+    style:width="100%"
+    style:height="100%"
+    style:background-color={$Theme.background.color}
+/>
+
+<div class="bg-element" id="bg-top-left"
+    style:color={$Theme.background.topLeft.color}
+    >
+    {$Theme.background.topLeft.text}
+</div>
+<div class="bg-element" id="bg-bottom-right"
+    style:color={$Theme.background.bottomRight.color}
+>
+    {@html roll}
+</div>
