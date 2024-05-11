@@ -17,12 +17,17 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 32px;
+    box-sizing: border-box;
+    
+    scrollbar-color: #111 #000;
 }
 
 .inner-container {
     width: 350px;
-    margin: 8px;
+    margin: auto 8px;
     
     border-style: solid;
     backdrop-filter: blur(32px);
@@ -41,22 +46,29 @@ h1 {
 .footer {
     margin-top: 16px;
     text-align: right;
+    
+    display: flex;
+    gap: 16px;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 </style>
 
 <script lang="ts">
     import Theme from './Theme';
+    import Overlay from "./Overlay.svelte";
+    import ScrollBlocker from './ScrollBlocker.svelte';
     
     import { fade } from 'svelte/transition';
     import { quartOut } from 'svelte/easing';
-    
-    import Overlay from "./Overlay.svelte";
     
     export let open: boolean = false;
 </script>
 
 {#if open}
+
+<ScrollBlocker />
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <Overlay>

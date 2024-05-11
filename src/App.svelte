@@ -45,9 +45,18 @@ import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
 import Theme from "./Theme";
+import { bundledThemes, savedThemes } from "./Theme";
+import Modal from './Modal.svelte';
+import Button from './Button.svelte';
+import Textfield from "./Textfield.svelte";
+import Dropdown from "./Dropdown.svelte";
+import { download, upload } from "./Download";
 
 import { blurFall, blurSink } from "./Animations";
 import Clickable from "./Clickable.svelte";
+import Navbar from "./Navbar.svelte";
+import Fa from "svelte-fa";
+import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 
@@ -103,21 +112,147 @@ function openEditor() {
 	chrome.tabs.create({ url: `chrome://bookmarks?id=${currentNode?.id}` });
 }
 
+let settingsModalOpen = false;
+let saveThemeModalOpen = false;
+let themeSelectValue = "";
+
 </script>
 
 <Background />
 
-<div id="edit"
-	style:color={$Theme.text.primary.color}
->
-	<Clickable
-		onClick={openEditor}
-		width="48px"
-		height="48px"
-	>
-		&#x270e;			
-	</Clickable>
-</div>
+<Modal bind:open={saveThemeModalOpen}>
+    <span slot="header">Save Theme</span>
+	<div slot="body">
+		<Textfield label="Name" bind:value={themeSelectValue} />
+	</div>
+	<svelte:fragment slot="footer">
+		<Button
+			color={$Theme.action.colors.confirm}
+			onClick={() => {
+				$savedThemes[themeSelectValue] = $Theme;
+				saveThemeModalOpen = false;
+			}}
+		>
+			Save
+		</Button>
+		<Button onClick={() => saveThemeModalOpen = false}>
+			Close
+		</Button>
+	</svelte:fragment>
+</Modal>
+
+<Modal bind:open={settingsModalOpen}>
+	<span slot="header">Settings</span>
+	<div slot="body">
+		<h2>Theme</h2>
+		<Dropdown bind:value={themeSelectValue} onChange={() =>{
+			$Theme = (
+				bundledThemes[themeSelectValue]
+			 || $savedThemes[themeSelectValue]
+			 || $Theme
+			);
+		}}>
+			<optgroup label="Saved">
+				{#each Object.keys($savedThemes) as key}
+					<option value={key}>{key}</option>
+				{/each}
+			</optgroup>
+			<optgroup label="Bundled">
+				{#each Object.keys(bundledThemes) as key}
+					<option value={key}>{key}</option>
+				{/each}
+			</optgroup>
+		</Dropdown>
+		<div
+			style:display="flex"
+			style:flex-direction="row"
+			style:justify-content="end"
+		>
+			<Button onClick={async () => {
+				let file = await upload();
+				if (file) {
+					$Theme = JSON.parse(file);
+				}
+			}}>
+				Import
+			</Button>
+			<Button onClick={() => download(
+				JSON.stringify($Theme, null, 4),
+				`theme.json`,
+				"application/json"
+			)}>
+				Export
+			</Button>
+			<Button
+				color={$Theme.action.colors.danger}
+				onClick={() => {
+					delete $savedThemes[themeSelectValue];
+					$savedThemes = $savedThemes; // trigger reactivity
+					themeSelectValue = "";
+				}}
+			>
+				Delete
+			</Button>
+			<Button color={$Theme.action.colors.confirm} onClick={() => saveThemeModalOpen = true}>
+				Save
+			</Button>
+		</div>
+	
+
+		<h3>Text</h3>
+		<Textfield label="Primary Color" bind:value={$Theme.text.primary.color} />
+		<Textfield label="Secondary Color" bind:value={$Theme.text.secondary.color} />
+		<h3>Text Fields</h3>
+		<Textfield label="Background Color" bind:value={$Theme.textfield.background.color} />
+		<h3>Background</h3>
+		<Textfield label="Color" bind:value={$Theme.background.color} />
+		<h4>Top Left</h4>
+		<Textfield label="Text" bind:value={$Theme.background.topLeft.text} />
+		<Textfield label="Color" bind:value={$Theme.background.topLeft.color} />
+		<h4>Bottom Right</h4>
+		<Textfield label="Color" bind:value={$Theme.background.bottomRight.color} />
+		<h3>Item</h3>
+		<Textfield label="Folder Color" bind:value={$Theme.item.folder.color} />
+		<h4>Livestream Indicator</h4>
+		<Textfield label="Checking Color" bind:value={$Theme.item.liveStream.colorChecking} />
+		<Textfield label="Live Color" bind:value={$Theme.item.liveStream.colorOnline} />
+		<h3>Frame</h3>
+		<Textfield label="Background Color" bind:value={$Theme.frame.background.color} />
+		<Textfield label="Border Color" bind:value={$Theme.frame.border.color} />
+		<Textfield label="Border Width" bind:value={$Theme.frame.border.width} />
+		<h3>Actions</h3>
+		<Textfield label="Confirm Color" bind:value={$Theme.action.colors.confirm} />
+		<Textfield label="Warning Color" bind:value={$Theme.action.colors.warning} />
+		<Textfield label="Danger Color" bind:value={$Theme.action.colors.danger} />
+		<h3>Clickables</h3>
+		<Textfield label="Hover Color" bind:value={$Theme.clickable.colors.hover} />
+		<Textfield label="Active Color" bind:value={$Theme.clickable.colors.active} />
+    </div>
+    <svelte:fragment slot="footer">
+        <!-- <Button
+            color={$Theme.action.colors.confirm}
+            onClick={() => {
+                settingsModalOpen = false;
+            }}
+        >
+            Save
+        </Button> -->
+        <Button onClick={() => settingsModalOpen = false}>
+            Close
+        </Button>
+    </svelte:fragment>
+</Modal>
+
+<Navbar>
+	<svelte:fragment slot="right">
+		<Clickable width="48px" height="48px" onClick={() => settingsModalOpen = true}>
+			<Fa icon={faGear} color={$Theme.text.primary.color} size="lg" />			
+		</Clickable>
+		<Clickable width="48px" height="48px" onClick={openEditor}>
+			<Fa icon={faPencil} color={$Theme.text.primary.color} size="lg" />			
+		</Clickable>
+	</svelte:fragment>
+</Navbar>
 
 {#if nodeStack.length === 1}
 	<div id="container" in:blurFall out:blurSink>

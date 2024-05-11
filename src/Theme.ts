@@ -130,4 +130,11 @@ const lightTheme = {
     }
 };
 
-export default persisted('theme', darkTheme);
+let currentTheme = persisted('theme', darkTheme as any);
+
+export default currentTheme;
+export let bundledThemes: { [key: string]: any } = {
+    "Dark": darkTheme,
+    "Light": lightTheme
+};
+export let savedThemes = persisted('themes', {} as any);

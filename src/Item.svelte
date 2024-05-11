@@ -354,12 +354,7 @@ let isFolder = !node.url;
             {/if}
         </div>
     </div>
-    <div slot="footer"
-        style:display="flex"
-        style:gap="16px"
-        style:flex-direction="row"
-        style:justify-content="flex-end"
-    >
+    <svelte:fragment slot="footer">
         <Button
             color={$Theme.action.colors.confirm}
             onClick={() => {
@@ -373,7 +368,7 @@ let isFolder = !node.url;
             Save
         </Button>
         <Button onClick={() => editModalOpen = false}>Cancel</Button>
-    </div>
+    </svelte:fragment>
 </Modal>
 
 <Modal bind:open={deleteModalOpen}>
@@ -381,13 +376,7 @@ let isFolder = !node.url;
     <div slot="body">
         Are you sure you want to delete "{node.title}"?
     </div>
-    <div
-        style:display="flex"
-        style:gap="16px"
-        style:flex-direction="row"
-        style:justify-content="flex-end"
-        slot="footer"
-    >
+    <svelte:fragment slot="footer">
         <Button
             color={$Theme.action.colors.danger}
             onClick={() => {
@@ -400,9 +389,8 @@ let isFolder = !node.url;
         <Button onClick={() => deleteModalOpen = false}>
             Cancel
         </Button>
-    </div>
+    </svelte:fragment>
 </Modal>
-
 
 <ContextMenu bind:open={menuOpen} bind:x={menuX} bind:y={menuY}>
     <ContextMenuItem onClick={() => editModalOpen = true}>Edit</ContextMenuItem>

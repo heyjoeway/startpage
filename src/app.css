@@ -4,9 +4,8 @@
 
 html {
   overflow-x: hidden;
-  scrollbar-color: #111 #000;
 	overflow-y: scroll;
-  scrollbar-gutter: stable;
+  scrollbar-color: #111 #000;
 }
 
 body {
