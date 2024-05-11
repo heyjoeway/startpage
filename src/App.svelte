@@ -57,6 +57,7 @@ import Clickable from "./Clickable.svelte";
 import Navbar from "./Navbar.svelte";
 import Fa from "svelte-fa";
 import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
+import TextfieldList from "./TextfieldList.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 
@@ -211,6 +212,9 @@ let themeSelectValue = "";
 		<Textfield label="Color" bind:value={$Theme.background.topLeft.color} />
 		<h4>Bottom Right</h4>
 		<Textfield label="Color" bind:value={$Theme.background.bottomRight.color} />
+		<h3>Category</h3>
+		<h4>Colors</h4>
+		<TextfieldList bind:value={$Theme.category.colors} />
 		<h3>Item</h3>
 		<Textfield label="Folder Color" bind:value={$Theme.item.folder.color} />
 		<h4>Livestream Indicator</h4>
