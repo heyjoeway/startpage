@@ -59,6 +59,17 @@
         transform: scale(1) rotateZ(45deg);
     }
 }
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
 </style>
 
 <script lang="ts">
@@ -74,12 +85,9 @@ let roll = randomElement(htmlDiceEntities);
 </script>
 
 <div
-    style:position="fixed"
-    style:top="0"
-    style:left="0"
-    style:width="100%"
-    style:height="100%"
+    class="bg"
     style:background-color={$Theme.background.color}
+    style:background-image="url({$Theme.background.image.uri})"
 />
 
 <div class="bg-element" id="bg-top-left"

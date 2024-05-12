@@ -1,4 +1,5 @@
 import { persisted } from 'svelte-persisted-store'
+import type { ImageUploadFile } from './ImageUpload';
 
 const darkTheme = {
     text: {
@@ -17,6 +18,7 @@ const darkTheme = {
     },
     background: {
         color: "black",
+        image: {} as ImageUploadFile,
         topLeft: {
             text: "start",
             color: "rgba(128, 128, 128, 0.15)"
@@ -82,6 +84,7 @@ const lightTheme = {
     },
     background: {
         color: "white",
+        image: {} as ImageUploadFile,
         topLeft: {
             text: "start",
             color: "rgba(128, 128, 128, 0.1)"

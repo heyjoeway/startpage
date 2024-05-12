@@ -7,25 +7,6 @@
     flex-wrap: wrap;
 }
 
-#edit {
-    width: 48px;
-    height: 48px;
-    position: fixed;
-    top: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-	opacity: 0.5;
-    font-size: 22px;
-    transform: scaleX(-100%);
-    transition: ease-out opacity 0.1s;
-	
-	&:hover {
-		opacity: 0.8;
-	}
-}
-
 #container {
 	position: absolute;
 	max-width: 808px;
@@ -58,6 +39,7 @@ import Navbar from "./Navbar.svelte";
 import Fa from "svelte-fa";
 import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
 import TextfieldList from "./TextfieldList.svelte";
+    import ImageUpload from "./ImageUpload.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 
@@ -206,6 +188,7 @@ let themeSelectValue = "";
 		<h3>Text Fields</h3>
 		<Textfield label="Background Color" bind:value={$Theme.textfield.background.color} />
 		<h3>Background</h3>
+		<ImageUpload label="Image" bind:value={$Theme.background.image} />
 		<Textfield label="Color" bind:value={$Theme.background.color} />
 		<h4>Top Left</h4>
 		<Textfield label="Text" bind:value={$Theme.background.topLeft.text} />
@@ -316,4 +299,3 @@ let themeSelectValue = "";
 {/key}
 
 {/if}
-
