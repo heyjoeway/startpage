@@ -25,21 +25,24 @@ import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
-import Theme from "./Theme";
-import { bundledThemes, savedThemes } from "./Theme";
-import Modal from './Modal.svelte';
-import Button from './Button.svelte';
-import Textfield from "./Textfield.svelte";
-import Dropdown from "./Dropdown.svelte";
 import { download, upload } from "./Download";
-
 import { blurFall, blurSink } from "./Animations";
-import Clickable from "./Clickable.svelte";
-import Navbar from "./Navbar.svelte";
+
+import { bundledThemes, savedThemes } from "./Theme";
+import {
+	Modal,
+	Button,
+	Textfield,
+	Dropdown,
+	Clickable,
+	Navbar,
+	TextfieldList,
+	ImageUpload,
+	Theme
+} from "joeysvelte";
+
 import Fa from "svelte-fa";
 import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
-import TextfieldList from "./TextfieldList.svelte";
-    import ImageUpload from "./ImageUpload.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 

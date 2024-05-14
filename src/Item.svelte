@@ -86,13 +86,15 @@ interface CacheInterface {
 const faviconCache = persisted('faviconCache', {} as CacheInterface);
 const colorCache = persisted('colorCache', {} as CacheInterface);
 
-import Clickable from "./Clickable.svelte";
-import ContextMenu from './ContextMenu.svelte';
-import ContextMenuItem from './ContextMenuItem.svelte';
-import Modal from './Modal.svelte';
-import Textfield from './Textfield.svelte';
-import Button from './Button.svelte';
-import Theme from './Theme';
+import {
+    Clickable,
+    ContextMenu,
+    ContextMenuItem,
+    Modal,
+    Textfield,
+    Button,
+    Theme
+} from "joeysvelte";
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
