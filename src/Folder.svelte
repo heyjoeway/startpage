@@ -27,7 +27,7 @@
 
 <div class="folder {alignCenter ? "align-center" : ""}">
 	{#each nodes as child (child.id)}
-		{#if child.url || (showSubFolders && !child.url)} <!-- item -->
+		{#if child.url || (showSubFolders && !child.url)}
 			<div class="itemmargin">
 				<Item
 					node={child}

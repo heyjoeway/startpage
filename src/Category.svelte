@@ -19,7 +19,7 @@
     $: if (node.children) {
         nodeChildren = node.children;
         
-        // Sort folders first (a node is a folder is url is undefined)
+        // Sort folders first (a node is a folder when url is undefined)
         nodeChildren.sort((a, b) => {
             if (a.url && !b.url) return 1;
             if (!a.url && b.url) return -1;

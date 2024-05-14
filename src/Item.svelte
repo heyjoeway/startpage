@@ -151,20 +151,6 @@ let isTwitchStream: boolean = false;
 let isYoutubeStreamVideo: boolean = false;
 let isYoutubeStreamPermalink: boolean = false;
 
-function updateDisplayURL(url: string) {
-    displayURL = url;
-    // Remove HTTP/HTTPS
-    displayURL = displayURL.replace(/(^\w+:|^)\/\//, '');
-    // Remove www
-    displayURL = displayURL.replace(/^www\./, '');
-    // Remove query string
-    displayURL = displayURL.replace(/\?.*$/, '');
-    // Remove hash
-    displayURL = displayURL.replace(/#.*$/, '');
-    // Remove trailing slash
-    displayURL = displayURL.replace(/\/$/, '');
-}
-
 $: if (node.url) {
     let faviconCacheHit = $faviconCache[node.url];
     if (faviconCacheHit) {
