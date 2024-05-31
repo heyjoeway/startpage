@@ -19,14 +19,18 @@
 </style>
 
 <script lang="ts">	
-import Background from "./Background.svelte";
 import Category from "./Category.svelte";
 import Title from "./Title.svelte";
 import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
 import { download, upload } from "./Download";
-import { blurFall, blurSink } from "./Animations";
+import {
+	Animations,
+	Background
+} from "joeysvelte";
+const blurFall = Animations.blurFall;
+const blurSink = Animations.blurSink;
 
 import { bundledThemes, savedThemes } from "./Theme";
 import {
@@ -102,9 +106,21 @@ let settingsModalOpen = false;
 let saveThemeModalOpen = false;
 let themeSelectValue = "";
 
+function randomElement(arr: any[]) {
+    return arr[Math.round(Math.random() * (arr.length - 1))];
+}
+let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684;", "&#x2685;"];
+
 </script>
 
-<Background />
+<Background>
+	<span slot="topLeft">
+		{$Theme.background.topLeft.text}
+	</span>
+	<span slot="bottomRight">
+		{@html randomElement(htmlDiceEntities)}
+	</span>
+</Background>
 
 <Modal bind:open={saveThemeModalOpen}>
     <span slot="header">Save Theme</span>
@@ -219,14 +235,6 @@ let themeSelectValue = "";
 		<Textfield label="Active Color" bind:value={$Theme.clickable.colors.active} />
     </div>
     <svelte:fragment slot="footer">
-        <!-- <Button
-            color={$Theme.action.colors.confirm}
-            onClick={() => {
-                settingsModalOpen = false;
-            }}
-        >
-            Save
-        </Button> -->
         <Button onClick={() => settingsModalOpen = false}>
             Close
         </Button>
