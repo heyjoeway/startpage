@@ -86,6 +86,8 @@ interface CacheInterface {
 const faviconCache = persisted('faviconCache', {} as CacheInterface);
 const colorCache = persisted('colorCache', {} as CacheInterface);
 
+import { currentTheme } from './Theme';
+
 import {
     Clickable,
     ContextMenu,
@@ -93,8 +95,7 @@ import {
     Modal,
     Textfield,
     Button,
-    Theme
-} from "joeysvelte";
+} from "./joeysvelte";
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -313,7 +314,7 @@ let isFolder = !node.url;
         style:flex-direction="row"
     >        
         {#if isFolder}
-            <Fa icon={faFolder} color={$Theme.item.folder.color} size="3x" />
+            <Fa icon={faFolder} color={$currentTheme.item.folder.color} size="3x" />
         {:else}
             <!-- svelte-ignore a11y-missing-attribute -->
             <img
@@ -333,7 +334,7 @@ let isFolder = !node.url;
     </div>
     <svelte:fragment slot="footer">
         <Button
-            color={$Theme.action.colors.confirm}
+            color={$currentTheme.action.colors.confirm}
             onClick={() => {
                 chrome.bookmarks.update(node.id, {
                     title: editTitle,
@@ -355,7 +356,7 @@ let isFolder = !node.url;
     </div>
     <svelte:fragment slot="footer">
         <Button
-            color={$Theme.action.colors.danger}
+            color={$currentTheme.action.colors.danger}
             onClick={() => {
                 chrome.bookmarks.remove(node.id);
                 deleteModalOpen = false;
@@ -379,30 +380,30 @@ let isFolder = !node.url;
         <div class="underline" style:background-color={color}></div>
         <div class="favicon">
             {#if isFolder}
-                <Fa icon={faFolder} color={$Theme.item.folder.color} size="lg" />
+                <Fa icon={faFolder} color={$currentTheme.item.folder.color} size="lg" />
                 {:else}
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <img src="{faviconContent}" />
             {/if}
         </div>
         <div class="text">
-            <div class="title" style:color={$Theme.text.primary.color}>
+            <div class="title" style:color={$currentTheme.text.primary.color}>
                 {node.title}
             </div>
             {#if liveStreamStatus == LiveStreamStatus.Loading}
-                <div class="url" style:color={$Theme.item.liveStream.colorChecking}>
+                <div class="url" style:color={$currentTheme.item.liveStream.colorChecking}>
                     &#x2B24;&nbsp;&nbsp;Checking...
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Live}
-                <div class="url" style:color={$Theme.item.liveStream.colorOnline}>
+                <div class="url" style:color={$currentTheme.item.liveStream.colorOnline}>
                     &#x2B24;&nbsp;&nbsp;Live
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Offline}
-                <div class="url" style:color={$Theme.text.secondary.color}>
+                <div class="url" style:color={$currentTheme.text.secondary.color}>
                     &#x2B24;&nbsp;&nbsp;Offline
                 </div>
             {:else if node.url}
-                <div class="url" style:color={$Theme.text.secondary.color}>
+                <div class="url" style:color={$currentTheme.text.secondary.color}>
                     {displayURL}
                 </div>
             {/if}

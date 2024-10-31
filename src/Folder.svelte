@@ -3,7 +3,7 @@
 .folder {
 	display: flex;
 	flex-direction: row;
-	width: 100%;
+	// width: 100%;
 	flex-wrap: wrap;
 	
 	.itemmargin {

@@ -28,22 +28,27 @@ import { download, upload } from "./Download";
 import {
 	Animations,
 	Background
-} from "joeysvelte";
+} from "./joeysvelte";
 const blurFall = Animations.blurFall;
 const blurSink = Animations.blurSink;
 
-import { bundledThemes, savedThemes } from "./Theme";
+import {
+	bundledThemes,
+	savedThemes,
+	currentTheme
+} from "./Theme";
 import {
 	Modal,
 	Button,
 	Textfield,
 	Dropdown,
+	DropdownOption,
+	DropdownGroup,
 	Clickable,
 	Navbar,
 	TextfieldList,
 	ImageUpload,
-	Theme
-} from "joeysvelte";
+} from "./joeysvelte";
 
 import Fa from "svelte-fa";
 import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
@@ -115,7 +120,7 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 
 <Background>
 	<span slot="topLeft">
-		{$Theme.background.topLeft.text}
+		{$currentTheme.background.topLeft.text}
 	</span>
 	<span slot="bottomRight">
 		{@html randomElement(htmlDiceEntities)}
@@ -129,9 +134,9 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 	</div>
 	<svelte:fragment slot="footer">
 		<Button
-			color={$Theme.action.colors.confirm}
+			color={$currentTheme.action.colors.confirm}
 			onClick={() => {
-				$savedThemes[themeSelectValue] = $Theme;
+				$savedThemes[themeSelectValue] = $currentTheme;
 				saveThemeModalOpen = false;
 			}}
 		>
@@ -148,22 +153,26 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 	<div slot="body">
 		<h2>Theme</h2>
 		<Dropdown bind:value={themeSelectValue} onChange={() =>{
-			$Theme = (
+			$currentTheme = (
 				bundledThemes[themeSelectValue]
 			 || $savedThemes[themeSelectValue]
-			 || $Theme
+			 || $currentTheme
 			);
 		}}>
-			<optgroup label="Saved">
+			<DropdownGroup label="Saved">
 				{#each Object.keys($savedThemes) as key}
-					<option value={key}>{key}</option>
+					<DropdownOption value={key}>
+						{key}
+					</DropdownOption>
 				{/each}
-			</optgroup>
-			<optgroup label="Bundled">
+			</DropdownGroup>
+			<DropdownGroup label="Bundled">
 				{#each Object.keys(bundledThemes) as key}
-					<option value={key}>{key}</option>
+					<DropdownOption value={key}>
+						{key}
+					</DropdownOption>
 				{/each}
-			</optgroup>
+			</DropdownGroup>
 		</Dropdown>
 		<div
 			style:display="flex"
@@ -173,20 +182,20 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 			<Button onClick={async () => {
 				let file = await upload();
 				if (file) {
-					$Theme = JSON.parse(file);
+					$currentTheme = JSON.parse(file);
 				}
 			}}>
 				Import
 			</Button>
 			<Button onClick={() => download(
-				JSON.stringify($Theme, null, 4),
+				JSON.stringify($currentTheme, null, 4),
 				`theme.json`,
 				"application/json"
 			)}>
 				Export
 			</Button>
 			<Button
-				color={$Theme.action.colors.danger}
+				color={$currentTheme.action.colors.danger}
 				onClick={() => {
 					delete $savedThemes[themeSelectValue];
 					$savedThemes = $savedThemes; // trigger reactivity
@@ -195,44 +204,44 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 			>
 				Delete
 			</Button>
-			<Button color={$Theme.action.colors.confirm} onClick={() => saveThemeModalOpen = true}>
+			<Button color={$currentTheme.action.colors.confirm} onClick={() => saveThemeModalOpen = true}>
 				Save
 			</Button>
 		</div>
 	
 
 		<h3>Text</h3>
-		<Textfield label="Primary Color" bind:value={$Theme.text.primary.color} />
-		<Textfield label="Secondary Color" bind:value={$Theme.text.secondary.color} />
+		<Textfield label="Primary Color" bind:value={$currentTheme.text.primary.color} />
+		<Textfield label="Secondary Color" bind:value={$currentTheme.text.secondary.color} />
 		<h3>Text Fields</h3>
-		<Textfield label="Background Color" bind:value={$Theme.textfield.background.color} />
+		<Textfield label="Background Color" bind:value={$currentTheme.textfield.background.color} />
 		<h3>Background</h3>
-		<ImageUpload label="Image" bind:value={$Theme.background.image} />
-		<Textfield label="Color" bind:value={$Theme.background.color} />
+		<ImageUpload label="Image" bind:value={$currentTheme.background.image} />
+		<Textfield label="Color" bind:value={$currentTheme.background.color} />
 		<h4>Top Left</h4>
-		<Textfield label="Text" bind:value={$Theme.background.topLeft.text} />
-		<Textfield label="Color" bind:value={$Theme.background.topLeft.color} />
+		<Textfield label="Text" bind:value={$currentTheme.background.topLeft.text} />
+		<Textfield label="Color" bind:value={$currentTheme.background.topLeft.color} />
 		<h4>Bottom Right</h4>
-		<Textfield label="Color" bind:value={$Theme.background.bottomRight.color} />
+		<Textfield label="Color" bind:value={$currentTheme.background.bottomRight.color} />
 		<h3>Category</h3>
 		<h4>Colors</h4>
-		<TextfieldList bind:value={$Theme.category.colors} />
+		<TextfieldList bind:value={$currentTheme.category.colors} />
 		<h3>Item</h3>
-		<Textfield label="Folder Color" bind:value={$Theme.item.folder.color} />
+		<Textfield label="Folder Color" bind:value={$currentTheme.item.folder.color} />
 		<h4>Livestream Indicator</h4>
-		<Textfield label="Checking Color" bind:value={$Theme.item.liveStream.colorChecking} />
-		<Textfield label="Live Color" bind:value={$Theme.item.liveStream.colorOnline} />
+		<Textfield label="Checking Color" bind:value={$currentTheme.item.liveStream.colorChecking} />
+		<Textfield label="Live Color" bind:value={$currentTheme.item.liveStream.colorOnline} />
 		<h3>Frame</h3>
-		<Textfield label="Background Color" bind:value={$Theme.frame.background.color} />
-		<Textfield label="Border Color" bind:value={$Theme.frame.border.color} />
-		<Textfield label="Border Width" bind:value={$Theme.frame.border.width} />
+		<Textfield label="Background Color" bind:value={$currentTheme.frame.background.color} />
+		<Textfield label="Border Color" bind:value={$currentTheme.frame.border.color} />
+		<Textfield label="Border Width" bind:value={$currentTheme.frame.border.width} />
 		<h3>Actions</h3>
-		<Textfield label="Confirm Color" bind:value={$Theme.action.colors.confirm} />
-		<Textfield label="Warning Color" bind:value={$Theme.action.colors.warning} />
-		<Textfield label="Danger Color" bind:value={$Theme.action.colors.danger} />
+		<Textfield label="Confirm Color" bind:value={$currentTheme.action.colors.confirm} />
+		<Textfield label="Warning Color" bind:value={$currentTheme.action.colors.warning} />
+		<Textfield label="Danger Color" bind:value={$currentTheme.action.colors.danger} />
 		<h3>Clickables</h3>
-		<Textfield label="Hover Color" bind:value={$Theme.clickable.colors.hover} />
-		<Textfield label="Active Color" bind:value={$Theme.clickable.colors.active} />
+		<Textfield label="Hover Color" bind:value={$currentTheme.clickable.colors.hover} />
+		<Textfield label="Active Color" bind:value={$currentTheme.clickable.colors.active} />
     </div>
     <svelte:fragment slot="footer">
         <Button onClick={() => settingsModalOpen = false}>
@@ -244,10 +253,10 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 <Navbar>
 	<svelte:fragment slot="right">
 		<Clickable width="48px" height="48px" onClick={() => settingsModalOpen = true}>
-			<Fa icon={faGear} color={$Theme.text.primary.color} size="lg" />			
+			<Fa icon={faGear} color={$currentTheme.text.primary.color} size="lg" />			
 		</Clickable>
 		<Clickable width="48px" height="48px" onClick={openEditor}>
-			<Fa icon={faPencil} color={$Theme.text.primary.color} size="lg" />			
+			<Fa icon={faPencil} color={$currentTheme.text.primary.color} size="lg" />			
 		</Clickable>
 	</svelte:fragment>
 </Navbar>
@@ -260,14 +269,14 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 		/>
 
 		{#if searchQuery.length === 0}
-			<Folder bind:nodes={currentNodeChildren} />
+			<Folder alignCenter={true} bind:nodes={currentNodeChildren} />
 
 			<div id="categories">
 				{#each currentNodeChildren as child, index (child.id)}
 					{#if child.children} <!-- folder -->
 						<Category
 							node={child}
-							color={$Theme.category.colors[index % $Theme.category.colors.length]}
+							color={$currentTheme.category.colors[index % $currentTheme.category.colors.length]}
 							onFolderClick={node => {
 								nodeStack = [...nodeStack, node];
 							}}
@@ -295,7 +304,7 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 		}}
 	/>
 
-	<Title color={$Theme.text.primary.color}>
+	<Title color={$currentTheme.text.primary.color}>
 		{currentNode?.title}
 	</Title>
 	
