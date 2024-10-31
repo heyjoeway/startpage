@@ -1,0 +1,3 @@
+[submodule "src/joeysvelte"]
+	path = src/joeysvelte
+	url = https://github.com/heyjoeway/joeysvelte
