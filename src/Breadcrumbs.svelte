@@ -10,14 +10,12 @@
 
 </style>
 
-<script lang="ts">
-    import { currentTheme } from "./Theme";
-    
+<script lang="ts">    
     export let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
     export let onClick: (index: number) => void = () => {};
 </script>
 
-<div id="breadcrumbs" style:color={$currentTheme.text.secondary.color}>
+<div id="breadcrumbs">
     {#each nodeStack as node, index (node.id)}
         {#if index < nodeStack.length - 1}
             <!-- svelte-ignore a11y-click-events-have-key-events -->

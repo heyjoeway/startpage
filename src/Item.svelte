@@ -7,9 +7,7 @@
     height: 48px;
     box-sizing: border-box;
     
-    font-family: 'Microsoft Sans Serif';
     font-size: 14px;
-    opacity: 75%;
     /* padding-left: 52px; */
     overflow: hidden;
         
@@ -18,9 +16,7 @@
     
     position: relative;
     
-    &:hover {
-        opacity: 100%;
-        
+    &:hover {        
         > .underline {
             width: 4px;
         }
@@ -56,7 +52,6 @@
 }
 
 .title, .url {
-    font-family: 'Microsoft Sans Serif';
     box-sizing: border-box;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -70,9 +65,15 @@
     max-width: calc((256px - 48px) - 4px);
     
 }
+
+.icon-folder {
+    color: var(--joeysvelte-item-folder-color);
+}
+
 </style>
 
 <script lang="ts">
+
 import * as cheerio from 'cheerio';
 import { persisted } from 'svelte-persisted-store'
 import { FastAverageColor } from 'fast-average-color';
@@ -86,16 +87,14 @@ interface CacheInterface {
 const faviconCache = persisted('faviconCache', {} as CacheInterface);
 const colorCache = persisted('colorCache', {} as CacheInterface);
 
-import { currentTheme } from './Theme';
+import { currentTheme } from '$joeysvelte/Theming.ts';
 
-import {
-    Clickable,
-    ContextMenu,
-    ContextMenuItem,
-    Modal,
-    Textfield,
-    Button,
-} from "./joeysvelte";
+import Clickable from "$joeysvelte/Clickable.svelte";
+import ContextMenu from "$joeysvelte/ContextMenu.svelte";
+import ContextMenuItem from "$joeysvelte/ContextMenuItem.svelte";
+import Modal from "$joeysvelte/Modal.svelte";
+import Textfield from "$joeysvelte/Textfield.svelte";
+import Button from "$joeysvelte/Button.svelte";
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -283,21 +282,13 @@ async function updateFavicon() {
     $colorCache[url] = color;
 }
 
-let menuOpen = false;
-let menuX: number, menuY: number;
-
-function openMenu(event: MouseEvent) {
-    event.preventDefault();
-    menuX = event.clientX;
-    menuY = event.clientY;
-    menuOpen = true;
-}
+let contextMenu: ContextMenu;
 
 let deleteModalOpen = false;
-$: if (deleteModalOpen) menuOpen = false;
+$: if (deleteModalOpen) contextMenu.close();
 
 let editModalOpen = false;
-$: if (editModalOpen) menuOpen = false;
+$: if (editModalOpen) contextMenu.close();
 
 let editTitle = node.title;
 let editURL = node.url;
@@ -314,7 +305,10 @@ let isFolder = !node.url;
         style:flex-direction="row"
     >        
         {#if isFolder}
-            <Fa icon={faFolder} color={$currentTheme.item.folder.color} size="3x" />
+            <Fa
+                icon={faFolder} size="3x"
+                color="var(--joeysvelte-item-folder-color)"
+            />
         {:else}
             <!-- svelte-ignore a11y-missing-attribute -->
             <img
@@ -325,16 +319,15 @@ let isFolder = !node.url;
         {/if}
         
         <div style:flex-grow=1>
-            <Textfield label="Name" bind:value={editTitle} /><br>
+            <Textfield label="Name" bind:value={editTitle} />
             {#if !isFolder}
-                <br>
-                <Textfield label="URL" bind:value={editURL} /><br>
+                <Textfield label="URL" bind:value={editURL} />
             {/if}
         </div>
     </div>
     <svelte:fragment slot="footer">
         <Button
-            color={$currentTheme.action.colors.confirm}
+            color="var(--joeysvelte-action-colors-confirm)"
             onClick={() => {
                 chrome.bookmarks.update(node.id, {
                     title: editTitle,
@@ -356,7 +349,7 @@ let isFolder = !node.url;
     </div>
     <svelte:fragment slot="footer">
         <Button
-            color={$currentTheme.action.colors.danger}
+            color="var(--joeysvelte-action-colors-danger)"
             onClick={() => {
                 chrome.bookmarks.remove(node.id);
                 deleteModalOpen = false;
@@ -370,40 +363,47 @@ let isFolder = !node.url;
     </svelte:fragment>
 </Modal>
 
-<ContextMenu bind:open={menuOpen} bind:x={menuX} bind:y={menuY}>
+<ContextMenu bind:this={contextMenu}>
     <ContextMenuItem onClick={() => editModalOpen = true}>Edit</ContextMenuItem>
     <ContextMenuItem onClick={() => deleteModalOpen = true}>Delete</ContextMenuItem>
 </ContextMenu>
 
-<Clickable onClick={onClick} onContextMenu={openMenu}>
+<Clickable onClick={onClick} onContextMenu={e => contextMenu.open(e)}>
     <div class="item">
         <div class="underline" style:background-color={color}></div>
         <div class="favicon">
             {#if isFolder}
-                <Fa icon={faFolder} color={$currentTheme.item.folder.color} size="lg" />
+                <Fa
+                    icon={faFolder} size="lg"
+                    color="var(--joeysvelte-item-folder-color)"
+                />
                 {:else}
                 <!-- svelte-ignore a11y-missing-attribute -->
                 <img src="{faviconContent}" />
             {/if}
         </div>
         <div class="text">
-            <div class="title" style:color={$currentTheme.text.primary.color}>
+            <div class="title" style:color="var(--joeysvelte-text-colors-primary)">
                 {node.title}
             </div>
             {#if liveStreamStatus == LiveStreamStatus.Loading}
-                <div class="url" style:color={$currentTheme.item.liveStream.colorChecking}>
+            <!-- style:color="var(--joeysvelte-item-liveStream-colorChecking)" -->
+                <div class="url">
                     &#x2B24;&nbsp;&nbsp;Checking...
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Live}
-                <div class="url" style:color={$currentTheme.item.liveStream.colorOnline}>
+            <!-- style:color="var(--joeysvelte-item-liveStream-colorOnline)" -->
+                <div class="url">
                     &#x2B24;&nbsp;&nbsp;Live
                 </div>
             {:else if liveStreamStatus == LiveStreamStatus.Offline}
-                <div class="url" style:color={$currentTheme.text.secondary.color}>
+            <!-- style:color="var(--joeysvelte-text-secondary-color)" -->
+                <div class="url">
                     &#x2B24;&nbsp;&nbsp;Offline
                 </div>
             {:else if node.url}
-                <div class="url" style:color={$currentTheme.text.secondary.color}>
+            <!-- style:color="var(--joeysvelte-text-secondary-color)" -->
+                <div class="url">
                     {displayURL}
                 </div>
             {/if}

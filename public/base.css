@@ -1,0 +1,111 @@
+@font-face {
+	font-family: 'terminus_ttf';
+	src: url('/fonts/terminusttf-4.49.3-webfont.woff2') format('woff2'),
+		url('/fonts/terminusttf-4.49.3-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'terminus_ttf';
+	src: url('/fonts/terminusttf-bold-4.49.3-webfont.woff2') format('woff2'),
+		url('/fonts/terminusttf-bold-4.49.3-webfont.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'terminus_ttf';
+	src: url('/fonts/terminusttf-bold-italic-4.49.3-webfont.woff2') format('woff2'),
+		url('/fonts/terminusttf-bold-italic-4.49.3-webfont.woff') format('woff');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'terminus_ttf';
+	src: url('/fonts/terminusttf-italic-4.49.3-webfont.woff2') format('woff2'),
+		url('/fonts/terminusttf-italic-4.49.3-webfont.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Microsoft Sans Serif';
+	font-style: normal;
+	font-weight: 400;
+	src: local("Microsoft Sans Serif"),url("/fonts/micross.woff") format("woff")
+}
+
+@font-face {
+	font-family: 'franklin_gothicregular';
+	src: url("/fonts/franklin_gothic_regular-webfont.woff2") format("woff2"),url("/fonts/franklin_gothic_regular-webfont.woff") format("woff");
+	font-weight: normal;
+	font-style: normal
+}
+
+h1 {
+	font-size: 42px;
+	letter-spacing: -1px;
+	line-height: 1;
+}
+
+h2 {
+	font-size: 26px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: "franklin_gothicregular", sans-serif;
+	font-weight: 400;
+	margin-top: 16px;
+	margin-bottom: 8px;
+	line-height: 1em;
+}
+
+@media screen and (max-width: 800px) {
+	h1 {
+		font-size: 36px;
+	}
+	
+	h2 {
+		font-size: 22px;
+	}
+}
+
+p, blockquote, pre, ul, ol, dl, figure, hr {
+	margin-bottom: 16px;
+}
+
+hr {
+	border: none;
+	border-bottom: rgba(128, 128, 128, 0.5) dashed 1px;
+}
+
+ul, ol {
+	padding-left: 24px;
+}
+
+table {
+	font-family: monospace;
+	font-size: 14px;
+	width: 100%;
+	overflow: auto;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+thead {
+	border-bottom: 1px solid #222;
+	padding-bottom: 8px;
+}
+
+th {
+	text-align: left;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 1em;
+}
+
+pre {
+	overflow: auto;
+}

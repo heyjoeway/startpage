@@ -1,6 +1,6 @@
 <script lang="ts">
 import Folder from "./Folder.svelte";
-import { Textfield } from "./joeysvelte";
+import Textfield from "$joeysvelte/Textfield.svelte";
 
 import Fuse from 'fuse.js'
 

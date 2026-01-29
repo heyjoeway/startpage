@@ -14,6 +14,7 @@
 	box-sizing: border-box;
 	padding: 8px;
 	top: 14vh;
+	padding-bottom: 14vh;
 }
 
 </style>
@@ -25,33 +26,34 @@ import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
 import { download, upload } from "./Download";
-import {
-	Animations,
-	Background
-} from "./joeysvelte";
+import Background from "$joeysvelte/Background.svelte";
+import Animations from "$joeysvelte/Animations.ts";
+
 const blurFall = Animations.blurFall;
 const blurSink = Animations.blurSink;
 
 import {
-	bundledThemes,
-	savedThemes,
-	currentTheme
-} from "./Theme";
-import {
-	Modal,
-	Button,
-	Textfield,
-	Dropdown,
-	DropdownOption,
-	DropdownGroup,
-	Clickable,
-	Navbar,
-	TextfieldList,
-	ImageUpload,
-} from "./joeysvelte";
+	bundledThemesStore,
+	savedThemesStore,
+	getPropStore,
+	getCssVar,
+	currentThemeKey,
+	currentThemeStore
+} from "$joeysvelte/Theming.ts";
+import Modal from "$joeysvelte/Modal.svelte";
+import Button from "$joeysvelte/Button.svelte";
+import Textfield from "$joeysvelte/Textfield.svelte";
+import Dropdown from "$joeysvelte/Dropdown.svelte";
+import DropdownOption from "$joeysvelte/DropdownOption.svelte";
+import DropdownGroup from "$joeysvelte/DropdownGroup.svelte";
+import Clickable from "$joeysvelte/Clickable.svelte";
+import Navbar from "$joeysvelte/Navbar.svelte";
+import TextfieldList from "$joeysvelte/TextfieldList.svelte";
+import ImageUpload from "$joeysvelte/ImageUpload.svelte";
 
 import Fa from "svelte-fa";
 import { faPencil, faGear } from '@fortawesome/free-solid-svg-icons';
+    import ThemeProvider from "$joeysvelte/ThemeProvider.svelte";
 
 let nodeStack: chrome.bookmarks.BookmarkTreeNode[] = [];
 
@@ -116,11 +118,35 @@ function randomElement(arr: any[]) {
 }
 let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684;", "&#x2685;"];
 
+let bgTextStore = getPropStore("bg.topLeft.text");
+
+const themeStoreTextColorsPrimary           = getPropStore("text.colors.primary");
+const themeStoreTextColorsSecondary         = getPropStore("text.colors.secondary");
+const themeStoreTextfieldBackgroundColor    = getPropStore("textfield.backgroundColor");
+const themeStoreBgBackgroundImage           = getPropStore("bg.backgroundImage");
+const themeStoreBgBackgroundColor           = getPropStore("bg.backgroundColor");
+const themeStoreBgTopLeftText               = getPropStore("bg.topLeft.text");
+const themeStoreBgTopLeftColor              = getPropStore("bg.topLeft.color");
+const themeStoreBgBottomRightColor          = getPropStore("bg.bottomRight.color");
+// const themeStoreCategoryColors              = getPropStore("category.colors");
+const themeStoreItemFolderColor             = getPropStore("item.folder.color");
+// const themeStoreItemLiveStreamColorChecking = getPropStore("item.liveStream.colorChecking");
+// const themeStoreItemLiveStreamColorOnline   = getPropStore("item.liveStream.colorOnline");
+const themeStoreFrameBackgroundColor        = getPropStore("frame.background.color");
+// const themeStoreFrameBorderColor            = getPropStore("frame.border.color");
+const themeStoreFrameBorderWidth            = getPropStore("frame.border.width");
+const themeStoreActionColorsConfirm         = getPropStore("action.colors.confirm");
+const themeStoreActionColorsWarning         = getPropStore("action.colors.warning");
+const themeStoreActionColorsDanger          = getPropStore("action.colors.danger");
+const themeStoreClickableColorsHover        = getPropStore("clickable.colors.hover");
+const themeStoreClickableColorsActive       = getPropStore("clickable.colors.active");
+
 </script>
 
+<ThemeProvider>
 <Background>
 	<span slot="topLeft">
-		{$currentTheme.background.topLeft.text}
+		{$bgTextStore}
 	</span>
 	<span slot="bottomRight">
 		{@html randomElement(htmlDiceEntities)}
@@ -134,9 +160,10 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 	</div>
 	<svelte:fragment slot="footer">
 		<Button
-			color={$currentTheme.action.colors.confirm}
+			color={getCssVar("action.colors.confirm")}
 			onClick={() => {
-				$savedThemes[themeSelectValue] = $currentTheme;
+				if (!$currentThemeStore) return;
+				$savedThemesStore[themeSelectValue] = $currentThemeStore;
 				saveThemeModalOpen = false;
 			}}
 		>
@@ -153,21 +180,17 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 	<div slot="body">
 		<h2>Theme</h2>
 		<Dropdown bind:value={themeSelectValue} onChange={() =>{
-			$currentTheme = (
-				bundledThemes[themeSelectValue]
-			 || $savedThemes[themeSelectValue]
-			 || $currentTheme
-			);
+			$currentThemeKey = themeSelectValue;
 		}}>
 			<DropdownGroup label="Saved">
-				{#each Object.keys($savedThemes) as key}
+				{#each Object.keys($savedThemesStore) as key}
 					<DropdownOption value={key}>
 						{key}
 					</DropdownOption>
 				{/each}
 			</DropdownGroup>
 			<DropdownGroup label="Bundled">
-				{#each Object.keys(bundledThemes) as key}
+				{#each Object.keys($bundledThemesStore) as key}
 					<DropdownOption value={key}>
 						{key}
 					</DropdownOption>
@@ -182,67 +205,69 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 			<Button onClick={async () => {
 				let file = await upload();
 				if (file) {
-					$currentTheme = JSON.parse(file);
+					$currentThemeStore = JSON.parse(file);
 				}
 			}}>
 				Import
 			</Button>
 			<Button onClick={() => download(
-				JSON.stringify($currentTheme, null, 4),
+				JSON.stringify($currentThemeStore, null, 4),
 				`theme.json`,
 				"application/json"
 			)}>
 				Export
 			</Button>
 			<Button
-				color={$currentTheme.action.colors.danger}
+				color={getCssVar("action.colors.danger")}
 				onClick={() => {
-					delete $savedThemes[themeSelectValue];
-					$savedThemes = $savedThemes; // trigger reactivity
+					delete $savedThemesStore[themeSelectValue];
+					$savedThemesStore = $savedThemesStore; // trigger reactivity
 					themeSelectValue = "";
 				}}
 			>
 				Delete
 			</Button>
-			<Button color={$currentTheme.action.colors.confirm} onClick={() => saveThemeModalOpen = true}>
+			<Button
+				color={getCssVar("action.colors.confirm")}
+				onClick={() => saveThemeModalOpen = true}
+			>
 				Save
 			</Button>
 		</div>
 	
-
 		<h3>Text</h3>
-		<Textfield label="Primary Color" bind:value={$currentTheme.text.primary.color} />
-		<Textfield label="Secondary Color" bind:value={$currentTheme.text.secondary.color} />
+		<Textfield label="Primary Color" bind:value={$themeStoreTextColorsPrimary} />
+		<Textfield label="Secondary Color" bind:value={$themeStoreTextColorsSecondary} />
 		<h3>Text Fields</h3>
-		<Textfield label="Background Color" bind:value={$currentTheme.textfield.background.color} />
+		<Textfield label="Background Color" bind:value={$themeStoreTextfieldBackgroundColor} />
 		<h3>Background</h3>
-		<ImageUpload label="Image" bind:value={$currentTheme.background.image} />
-		<Textfield label="Color" bind:value={$currentTheme.background.color} />
+		<ImageUpload label="Image" bind:value={$themeStoreBgBackgroundImage} />
+		<Textfield label="Color" bind:value={$themeStoreBgBackgroundColor} />
 		<h4>Top Left</h4>
-		<Textfield label="Text" bind:value={$currentTheme.background.topLeft.text} />
-		<Textfield label="Color" bind:value={$currentTheme.background.topLeft.color} />
+		<Textfield label="Text" bind:value={$themeStoreBgTopLeftText} />
+		<Textfield label="Color" bind:value={$themeStoreBgTopLeftColor} />
 		<h4>Bottom Right</h4>
-		<Textfield label="Color" bind:value={$currentTheme.background.bottomRight.color} />
+		<Textfield label="Color" bind:value={$themeStoreBgBottomRightColor} />
 		<h3>Category</h3>
-		<h4>Colors</h4>
-		<TextfieldList bind:value={$currentTheme.category.colors} />
+		<!-- <h4>Colors</h4>
+		<TextfieldList bind:value={$themeStoreCategoryColors} /> -->
 		<h3>Item</h3>
-		<Textfield label="Folder Color" bind:value={$currentTheme.item.folder.color} />
-		<h4>Livestream Indicator</h4>
-		<Textfield label="Checking Color" bind:value={$currentTheme.item.liveStream.colorChecking} />
-		<Textfield label="Live Color" bind:value={$currentTheme.item.liveStream.colorOnline} />
+		<Textfield label="Folder Color" bind:value={$themeStoreItemFolderColor} />
+		<!-- <h4>Livestream Indicator</h4>
+		<Textfield label="Checking Color" bind:value={$themeStoreItemLiveStreamColorChecking} />
+		<Textfield label="Live Color" bind:value={$themeStoreItemLiveStreamColorOnline} /> -->
 		<h3>Frame</h3>
-		<Textfield label="Background Color" bind:value={$currentTheme.frame.background.color} />
-		<Textfield label="Border Color" bind:value={$currentTheme.frame.border.color} />
-		<Textfield label="Border Width" bind:value={$currentTheme.frame.border.width} />
+		<Textfield label="Background Color" bind:value={$themeStoreFrameBackgroundColor} />
+		<!-- <Textfield label="Border Color" bind:value={$themeStoreFrameBorderColor} /> -->
+		<Textfield label="Border Width" bind:value={$themeStoreFrameBorderWidth} />
 		<h3>Actions</h3>
-		<Textfield label="Confirm Color" bind:value={$currentTheme.action.colors.confirm} />
-		<Textfield label="Warning Color" bind:value={$currentTheme.action.colors.warning} />
-		<Textfield label="Danger Color" bind:value={$currentTheme.action.colors.danger} />
+		<Textfield label="Confirm Color" bind:value={$themeStoreActionColorsConfirm} />
+		<Textfield label="Warning Color" bind:value={$themeStoreActionColorsWarning} />
+		<Textfield label="Danger Color" bind:value={$themeStoreActionColorsDanger} />
 		<h3>Clickables</h3>
-		<Textfield label="Hover Color" bind:value={$currentTheme.clickable.colors.hover} />
-		<Textfield label="Active Color" bind:value={$currentTheme.clickable.colors.active} />
-    </div>
+		<Textfield label="Hover Color" bind:value={$themeStoreClickableColorsHover} />
+		<Textfield label="Active Color" bind:value={$themeStoreClickableColorsActive} />
+	</div>
     <svelte:fragment slot="footer">
         <Button onClick={() => settingsModalOpen = false}>
             Close
@@ -253,10 +278,16 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 <Navbar>
 	<svelte:fragment slot="right">
 		<Clickable width="48px" height="48px" onClick={() => settingsModalOpen = true}>
-			<Fa icon={faGear} color={$currentTheme.text.primary.color} size="lg" />			
+			<Fa
+				icon={faGear} size="lg"
+				color="var(--joeysvelte-text-colors-primary)" 
+			/>
 		</Clickable>
 		<Clickable width="48px" height="48px" onClick={openEditor}>
-			<Fa icon={faPencil} color={$currentTheme.text.primary.color} size="lg" />			
+			<Fa
+				icon={faPencil} size="lg"
+				color="var(--joeysvelte-text-colors-primary)"
+			/>
 		</Clickable>
 	</svelte:fragment>
 </Navbar>
@@ -274,9 +305,9 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 			<div id="categories">
 				{#each currentNodeChildren as child, index (child.id)}
 					{#if child.children} <!-- folder -->
+					<!-- color={$currentTheme.category.colors[index % $currentTheme.category.colors.length]} -->
 						<Category
 							node={child}
-							color={$currentTheme.category.colors[index % $currentTheme.category.colors.length]}
 							onFolderClick={node => {
 								nodeStack = [...nodeStack, node];
 							}}
@@ -304,7 +335,7 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 		}}
 	/>
 
-	<Title color={$currentTheme.text.primary.color}>
+	<Title color="var(--joeysvelte-text-colors-primary)">
 		{currentNode?.title}
 	</Title>
 	
@@ -319,3 +350,4 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 {/key}
 
 {/if}
+</ThemeProvider>

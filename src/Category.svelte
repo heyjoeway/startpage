@@ -1,8 +1,22 @@
 <style lang="scss">
 
-.category {
+.outer {
+    display: flex;
+    justify-content: center;
+}
+
+.inner {
     padding-top: 16px;
     padding-bottom: 8px;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.children {
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
 }
 
 </style>
@@ -29,9 +43,13 @@
     } else nodeChildren = [];
 </script>
 
-<div class="category">
-    <Title color={color}>{node.title}</Title>
-    {#each nodeChildren as child (child.id)}
-        <Item node={child} onFolderClick={onFolderClick} />
-    {/each}
+<div class="outer">
+    <div class="inner">
+        <Title color={color}>{node.title}</Title>
+        <div class="children">
+            {#each nodeChildren as child (child.id)}
+                <Item node={child} onFolderClick={onFolderClick} />
+            {/each}
+        </div>
+    </div>
 </div>

@@ -9,7 +9,6 @@
     text-transform: lowercase;
 
     display: block;
-    width: 100%;
     text-align: left;
     height: 48px;
     box-sizing: border-box;
@@ -17,6 +16,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    
+    margin-bottom: 8px;
 }
 </style>
 

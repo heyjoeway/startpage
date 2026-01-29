@@ -25,6 +25,7 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "@fontsource-variable/ibm-plex-sans": "^5.2.8",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "cheerio": "^1.0.0-rc.12",
     "fast-average-color": "^9.4.0",
