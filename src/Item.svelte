@@ -11,7 +11,7 @@
     /* padding-left: 52px; */
     overflow: hidden;
         
-    display: flex;
+    display: inline-flex;
     align-items: center;
     
     position: relative;

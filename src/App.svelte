@@ -2,17 +2,14 @@
 @import "./style/fonts.scss";
 
 #categories {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+	width: 100%;
 }
 
 #container {
 	position: absolute;
-	max-width: 808px;
-	width: 100%;
+	max-width: 768px;
+	width: calc(round(down, 100%, 256px));
 	box-sizing: border-box;
-	padding: 8px;
 	top: 14vh;
 	padding-bottom: 14vh;
 }

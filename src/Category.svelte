@@ -1,22 +1,16 @@
 <style lang="scss">
 
 .outer {
-    display: flex;
-    justify-content: center;
 }
 
 .inner {
     padding-top: 16px;
     padding-bottom: 8px;
-    
-    display: flex;
-    flex-direction: column;
 }
 
 .children {
     display: flex;
     flex-wrap: wrap;
-    width: fit-content;
 }
 
 </style>
