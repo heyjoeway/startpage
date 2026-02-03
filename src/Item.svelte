@@ -87,14 +87,13 @@ interface CacheInterface {
 const faviconCache = persisted('faviconCache', {} as CacheInterface);
 const colorCache = persisted('colorCache', {} as CacheInterface);
 
-import { currentTheme } from '$joeysvelte/Theming.ts';
-
 import Clickable from "$joeysvelte/Clickable.svelte";
 import ContextMenu from "$joeysvelte/ContextMenu.svelte";
 import ContextMenuItem from "$joeysvelte/ContextMenuItem.svelte";
 import Modal from "$joeysvelte/Modal.svelte";
 import Textfield from "$joeysvelte/Textfield.svelte";
 import Button from "$joeysvelte/Button.svelte";
+import { clipboardStore } from './Clipboard';
 
 export let node: chrome.bookmarks.BookmarkTreeNode;
 export let onFolderClick: (node: chrome.bookmarks.BookmarkTreeNode) => void = () => {};
@@ -295,6 +294,24 @@ let editURL = node.url;
 
 let isFolder = !node.url;
 
+function pasteNode(otherNode: chrome.bookmarks.BookmarkTreeNode) {
+    const clipboardNode = $clipboardStore;
+    if (!clipboardNode) return;
+
+    if (otherNode.children) {
+        chrome.bookmarks.move(clipboardNode.id, {
+            parentId: otherNode.id
+        });
+    } else {
+        chrome.bookmarks.move(clipboardNode.id, {
+            parentId: otherNode.parentId,
+            index: otherNode.index! + 1
+        });
+    }
+    
+    clipboardStore.set(null);
+}
+
 </script>
 
 <Modal bind:open={editModalOpen}>
@@ -364,11 +381,43 @@ let isFolder = !node.url;
 </Modal>
 
 <ContextMenu bind:this={contextMenu}>
-    <ContextMenuItem onClick={() => editModalOpen = true}>Edit</ContextMenuItem>
-    <ContextMenuItem onClick={() => deleteModalOpen = true}>Delete</ContextMenuItem>
+    <ContextMenuItem
+        icon="✂️"
+        onClick={() => {
+            clipboardStore.set(node);
+            contextMenu.close();
+        }}
+    >
+        Cut
+    </ContextMenuItem>
+    <ContextMenuItem
+        icon="📋"
+        disabled={$clipboardStore === null}
+        onClick={() => {
+            pasteNode(node);
+            contextMenu.close();
+        }}
+    >
+        Paste
+    </ContextMenuItem>
+    <ContextMenuItem
+        icon="✏️"
+        onClick={() => editModalOpen = true}
+    >
+        Edit
+    </ContextMenuItem>
+    <ContextMenuItem
+        icon="🗑️"
+        onClick={() => deleteModalOpen = true}
+    >
+        Delete
+    </ContextMenuItem>
 </ContextMenu>
 
-<Clickable onClick={onClick} onContextMenu={e => contextMenu.open(e)}>
+<Clickable
+    onClick={onClick}
+    onContextMenu={e => contextMenu.open(e)}
+>
     <div class="item">
         <div class="underline" style:background-color={color}></div>
         <div class="favicon">

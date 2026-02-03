@@ -5,10 +5,6 @@
 	flex-direction: row;
 	// width: 100%;
 	flex-wrap: wrap;
-	
-	.itemmargin {
-		margin: 4px;
-	}
 }
 
 .align-center {
@@ -28,12 +24,10 @@
 <div class="folder {alignCenter ? "align-center" : ""}">
 	{#each nodes as child (child.id)}
 		{#if child.url || (showSubFolders && !child.url)}
-			<div class="itemmargin">
-				<Item
-					node={child}
-					onFolderClick={onFolderClick}
-				/>
-			</div>
+			<Item
+				node={child}
+				onFolderClick={onFolderClick}
+			/>
 		{/if}
 	{/each}
 </div>
