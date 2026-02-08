@@ -23,10 +23,7 @@ import Search from "./Search.svelte";
 import Breadcrumbs from "./Breadcrumbs.svelte";
 import Folder from "./Folder.svelte";
 import Background from "$joeysvelte/Background.svelte";
-import Animations from "$joeysvelte/Animations.ts";
-
-const blurFall = Animations.blurFall;
-const blurSink = Animations.blurSink;
+import { shift } from "$joeysvelte/Animations.ts";
 
 import { getPropStore } from "$joeysvelte/Theming.ts";
 import Clickable from "$joeysvelte/Clickable.svelte";
@@ -138,7 +135,7 @@ const themeStoreHeaderColors = getPropStore("header.colors");
 </Navbar>
 
 {#if nodeStack.length === 1}
-	<div id="container" in:blurFall out:blurSink>
+	<div id="container" in:shift out:shift={{ direction: "down" }}>
 		<Search
 			rootNode={nodeStack[0]}
 			bind:searchQuery={searchQuery}
@@ -169,8 +166,8 @@ const themeStoreHeaderColors = getPropStore("header.colors");
 {#key currentNode?.id}
 
 <div
-	in:blurFall|global
-	out:blurSink|global
+	in:shift|global
+	out:shift|global={{ direction: "down" }}
 	id="container"
 >
 
