@@ -15,9 +15,12 @@
     "checkJs": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "paths": {
       "$lib/*": ["./src/lib/*"],
       "$lib": ["./src/lib"],
+      "$joeysvelte": ["./src/joeysvelte/src/lib"],
       "$joeysvelte/*": ["./src/joeysvelte/src/lib/*"]
     }
   },
