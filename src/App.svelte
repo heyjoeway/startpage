@@ -89,8 +89,6 @@ function openEditor() {
 }
 
 let settingsModalOpen = false;
-let saveThemeModalOpen = false;
-let themeSelectValue = "";
 
 function randomElement(arr: any[]) {
     return arr[Math.round(Math.random() * (arr.length - 1))];
@@ -100,7 +98,43 @@ let htmlDiceEntities = ["&#x2680;", "&#x2681;", "&#x2682;", "&#x2683;", "&#x2684
 let bgTextStore = getPropStore("bg.topLeft.text");
 const themeStoreHeaderColors = getPropStore("header.colors");
 
+interface NavPopState {
+	navDepth: number;
+}
+
+interface NavPopEvent extends PopStateEvent {
+	state: NavPopState;
+}
+
+function onPopState(e: NavPopEvent) {
+	let navDepth = 0;
+	if (e.state) {
+		if (e.state.navDepth !== undefined)
+			navDepth = e.state.navDepth;
+	}
+	
+	if (navDepth < nodeStack.length) {
+		nodeStack = nodeStack.slice(0, navDepth + 1);
+	}
+}
+
+function navigate(node: chrome.bookmarks.BookmarkTreeNode) {	
+	nodeStack = [...nodeStack, node];
+	let popDepth = nodeStack.length - 1;
+	history.pushState(
+		{
+			navDepth: popDepth
+		}, "",
+		new URL(
+			`?nav-${popDepth}`,
+			location.href
+		).href
+	);
+}
+
 </script>
+
+<svelte:window on:popstate={onPopState} />
 
 {#if settingsModalOpen}
 	<Settings bind:open={settingsModalOpen} />
@@ -151,9 +185,7 @@ const themeStoreHeaderColors = getPropStore("header.colors");
 						<Category
 								color={colors[index % colors.length]}
 								node={child}
-								onFolderClick={node => {
-									nodeStack = [...nodeStack, node];
-								}}
+								onFolderClick={node => navigate(node)}
 							/>
 					{/if}
 				{/each}
@@ -185,9 +217,7 @@ const themeStoreHeaderColors = getPropStore("header.colors");
 	<Folder
 		bind:nodes={currentNodeChildren}
 		showSubFolders={true}
-		onFolderClick={node => {
-			nodeStack = [...nodeStack, node];
-		}}
+		onFolderClick={node => navigate(node)}
 	/>
 </div>
 {/key}
